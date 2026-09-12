@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Welcome! on Security With Ian</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content in Welcome! on Security With Ian</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 02 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Nibbles - Hack the Box</title>
+      <link>http://localhost:1313/posts/nibbles---hack-the-box/</link>
+      <pubDate>Wed, 02 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/nibbles---hack-the-box/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Difficulty:&lt;/strong&gt; Easy&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OS:&lt;/strong&gt; Linux&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Date Completed:&lt;/strong&gt; 2026-09-02&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Write-up Authored by:&lt;/strong&gt; Ian Simons&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Challenge Created by:&lt;/strong&gt; mrb3n8132&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Core Competencies:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Network Enumeration with &lt;strong&gt;Nmap&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Manual Web Enumeration&lt;/li&gt;
+&lt;li&gt;Web Enumeration with &lt;strong&gt;Gobuster&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Vulnerability Research&lt;/li&gt;
+&lt;li&gt;Initial Access with &lt;strong&gt;Metasploit&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Privilege Enumeration&lt;/li&gt;
+&lt;li&gt;Privilege Escalation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;This Box was completed as part of the Hack the Box Academy Job Role Path &amp;ldquo;Penetration Tester&amp;rdquo; in the &amp;ldquo;Getting Started&amp;rdquo; Module. The purpose of completing this box is to build familiarity with the Hack the Box platform. While the Academy module walks the user through this Box, I opted to complete it on my own using my existing, albeit limited, skillset. Additionally, this was another opportunity to sharpen my &lt;strong&gt;Metasploit&lt;/strong&gt; fundamentals.
+Note: Flags documented in Appendix B&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Jerry - Hack the Box</title>
+      <link>http://localhost:1313/posts/jerry---hack-the-box/</link>
+      <pubDate>Sun, 30 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/jerry---hack-the-box/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Difficulty:&lt;/strong&gt; Easy&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OS:&lt;/strong&gt; Windows&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Date Completed:&lt;/strong&gt; 2026-08-30&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Write-up Authored by:&lt;/strong&gt; Ian Simons&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Challenge Created by:&lt;/strong&gt; mrh4sh&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Core Competencies:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Network Enumeration with Nmap&lt;/li&gt;
+&lt;li&gt;Vulnerability Research&lt;/li&gt;
+&lt;li&gt;Brute Forcing with Metasploit&lt;/li&gt;
+&lt;li&gt;Exploitation with Metasploit&lt;/li&gt;
+&lt;li&gt;Web Enumeration with gobuster&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;This box was recommended by the Hack the Box Academy Job Role Path &amp;ldquo;Penetration Tester&amp;rdquo; in the &amp;ldquo;Getting Started&amp;rdquo; Module. The purpose of completing this box is to build familiarity with Metasploit. As we will see, it did just that.
+Note: Flags documented in Appendix B&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Granny - Hack the Box</title>
+      <link>http://localhost:1313/posts/granny---hack-the-box/</link>
+      <pubDate>Thu, 27 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/granny---hack-the-box/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Difficulty:&lt;/strong&gt; Easy&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OS:&lt;/strong&gt; Windows&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Date Completed:&lt;/strong&gt; 2026-08-27&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Write-up Authored by:&lt;/strong&gt; Ian Simons&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Challenge Created by:&lt;/strong&gt; ch4p&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Core Competencies:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Network Enumeration with Nmap&lt;/li&gt;
+&lt;li&gt;Vulnerability Research&lt;/li&gt;
+&lt;li&gt;Initial Access with Metasploit&lt;/li&gt;
+&lt;li&gt;Vulnerability Scanning with Metasploit&lt;/li&gt;
+&lt;li&gt;Privilege Escalation with Metasploit&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;This Box was recommended by the Hack the Box Academy Job Role Path &amp;ldquo;Penetration Tester&amp;rdquo; in the &amp;ldquo;Getting Started&amp;rdquo; Module. The purpose of completing this box is to build familiarity with Metasploit. As we will see it did just that.
+Note: Flags documented in Appendix B&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Security Toolkit</title>
+      <link>http://localhost:1313/security-toolkit/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/security-toolkit/</guid>
+      <description>&lt;p&gt;A curated collection of cybersecurity tools, references, and utilities that I regularly use in my security work and continuous learning.&lt;/p&gt;
+&lt;h3 id=&#34;reconnaissance--asset-discovery&#34;&gt;Reconnaissance &amp;amp; Asset Discovery&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.shodan.io/&#34;&gt;Shodan&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://search.censys.io/&#34;&gt;Censys&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://lolol.farm/&#34;&gt;Living off the Land&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;threat-intelligence&#34;&gt;Threat Intelligence&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://virustotal.com&#34;&gt;Virus Total&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://attack.mitre.org/&#34;&gt;MITRE ATT&amp;amp;CK&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.abuseipdb.com/&#34;&gt;AbuseIPDB&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;references--cheat-sheets&#34;&gt;References &amp;amp; Cheat Sheets&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://swisskyrepo.github.io/InternalAllTheThings/&#34;&gt;Payload all the Things&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://hacktricks.wiki/en/index.html&#34;&gt;HackTricks&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;analysis--utilities&#34;&gt;Analysis &amp;amp; Utilities&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://gchq.github.io/CyberChef/&#34;&gt;Cyber Chef&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://any.run/&#34;&gt;Any.Run&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

