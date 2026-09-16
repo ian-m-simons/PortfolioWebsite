@@ -6,8 +6,17 @@
     <description>Recent content in Posts on Security With Ian</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 02 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://SecurityWithIan.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Write-up Generator with Nmap Integration</title>
+      <link>https://SecurityWithIan.com/posts/write-up-generator-with-nmap-integration/</link>
+      <pubDate>Tue, 15 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://SecurityWithIan.com/posts/write-up-generator-with-nmap-integration/</guid>
+      <description>&lt;h1 id=&#34;write-up-generator-with-nmap-integration&#34;&gt;Write-up Generator with Nmap Integration&lt;/h1&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Recently I made a python tool to automate my write-up templates, start filling out some simple sections (ie nmap output, open ports etc), and perform a few additional Web Enumeration tasks such as grabbing html comments and the robots.txt file if it exists. I built it because I wanted to learn basic nmap output parsing, and save time during my weekly write-ups.This tool should save me time creating a skeleton of the write-up. It should also prevent accidentally leaving old data in new write-ups, and standardize my formatting for every write-up.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Nibbles - Hack the Box</title>
       <link>https://SecurityWithIan.com/posts/nibbles---hack-the-box/</link>
