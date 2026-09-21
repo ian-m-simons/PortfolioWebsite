@@ -6,8 +6,32 @@
     <description>Recent content in Posts on Security With Ian</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 19 Sep 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://SecurityWithIan.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cap - Hack the Box</title>
+      <link>https://SecurityWithIan.com/posts/cap---hack-the-box/</link>
+      <pubDate>Sat, 19 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://SecurityWithIan.com/posts/cap---hack-the-box/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Difficulty:&lt;/strong&gt; Easy&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OS:&lt;/strong&gt; Linux&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Date Completed:&lt;/strong&gt; 2026-09-19&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Write-up Authored by:&lt;/strong&gt; Ian Simons&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Challenge Created by:&lt;/strong&gt; InfoSecJack&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Core Competencies:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Network Reconnaissance and Service Enumeration&lt;/li&gt;
+&lt;li&gt;Web Application Enumeration&lt;/li&gt;
+&lt;li&gt;Insecure Direct Object Reference (IDOR) Identification and Exploitation&lt;/li&gt;
+&lt;li&gt;Packet Analysis&lt;/li&gt;
+&lt;li&gt;Linux System Enumeration&lt;/li&gt;
+&lt;li&gt;Linux Capability Abuse&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;overview&#34;&gt;Overview&lt;/h3&gt;
+&lt;p&gt;This machine was completed as part of my training in the Hack The Box Academy Penetration Tester Job-Role Path. While not a required module, I selected this target to gain additional practice with manual exploitation.&lt;!-- raw HTML omitted --&gt;
+Note: Flags documented in Appendix B&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Write-up Generator with Nmap Integration</title>
       <link>https://SecurityWithIan.com/posts/write-up-generator-with-nmap-integration/</link>
