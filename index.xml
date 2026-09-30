@@ -6,8 +6,35 @@
     <description>Recent content in Welcome! on Security With Ian</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 19 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 29 Sep 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://SecurityWithIan.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Bashed - Hack the Box</title>
+      <link>https://SecurityWithIan.com/posts/bashed--hack-the-box/</link>
+      <pubDate>Tue, 29 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://SecurityWithIan.com/posts/bashed--hack-the-box/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Difficulty:&lt;/strong&gt; Easy&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OS:&lt;/strong&gt; Linux&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Date Completed:&lt;/strong&gt; 2026-09-25&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Write-up Authored by:&lt;/strong&gt; Ian Simons&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Challenge Created by:&lt;/strong&gt; Arrexel&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Core Competencies:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Web application enumeration&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Post-exploitation Enumeration&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Linux Privilege Escalation&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;overview&#34;&gt;Overview&lt;/h3&gt;
+&lt;p&gt;This Machine was completed as a complement to my training in the Hack The Box Academy Penetration Tester Job-Role Path. This box was chosen to further improve my manual enumeration and exploitation skills, and build confidence in my existing skill set.&lt;!-- raw HTML omitted --&gt;
+Note: Flags documented in Appendix B.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Cap - Hack the Box</title>
       <link>https://SecurityWithIan.com/posts/cap---hack-the-box/</link>

