@@ -6,8 +6,37 @@
     <description>Recent content in Welcome! on Security With Ian</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 29 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 13 Oct 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://SecurityWithIan.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Active - Hack the Box</title>
+      <link>https://SecurityWithIan.com/posts/active---hack-the-box/</link>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+      <guid>https://SecurityWithIan.com/posts/active---hack-the-box/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Difficulty:&lt;/strong&gt; Easy&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OS:&lt;/strong&gt; Windows&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Date Completed:&lt;/strong&gt; 2026-10-13&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Write-up Authored by:&lt;/strong&gt; Ian Simons&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Challenge Created by:&lt;/strong&gt; eks &amp;amp; mrb3n8132&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Core Competencies:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Active Directory Enumeration&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;LDAP Enumeration&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Kerberos Authentication&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Password Cracking&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;overview&#34;&gt;Overview&lt;/h3&gt;
+&lt;p&gt;This machine was discovered completely by accident. I had originally planned to complete a different box but accidentally scanned the wrong IP. After spending longer than I would care to admit attacking a web server I was convinced was an Active Directory Domain Controller, I decided to do Active instead. I am really glad I did. It helped break down the perceived complexity I had associated with Active Directory Machines, and demonstrated that successful domain compromise often results from methodical enumeration and chaining of realistic misconfigurations rather than highly complex exploitation techniques.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Bashed - Hack the Box</title>
       <link>https://SecurityWithIan.com/posts/bashed--hack-the-box/</link>
