@@ -6,8 +6,40 @@
     <description>Recent content in Posts on Security With Ian</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 13 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 19 Oct 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://SecurityWithIan.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kerberoasting&#43;PtH - DIY Lab</title>
+      <link>https://SecurityWithIan.com/posts/kerberoasting&#43;pth---diy/</link>
+      <pubDate>Mon, 19 Oct 2026 00:00:00 +0000</pubDate>
+      <guid>https://SecurityWithIan.com/posts/kerberoasting&#43;pth---diy/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Difficulty:&lt;/strong&gt; Easy&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OS:&lt;/strong&gt; Windows&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Date Completed:&lt;/strong&gt; 2026-10-19&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Write-up Authored by:&lt;/strong&gt; Ian Simons&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Lab Created by:&lt;/strong&gt; Ian Simons&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Core Competencies:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Active Directory Enumeration&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;LDAP Enumeration&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Kerberos Authentication&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Password Cracking&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pass the Hash&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;overview&#34;&gt;Overview&lt;/h3&gt;
+&lt;p&gt;Recently I completed a Hack the Box lab called Active. This Box was a lot of fun and showed me that Active Directory is not some overly complex inherently hardened system. After that I decided that I wanted to learn more about attacking Active Directory on my own. I set up this lab to better understand and learn to run the Pass-the-Hash attack. There was a lot of learning involved, but I came away with a solid lab, and a much better understanding of the technique.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Active - Hack the Box</title>
       <link>https://SecurityWithIan.com/posts/active---hack-the-box/</link>
