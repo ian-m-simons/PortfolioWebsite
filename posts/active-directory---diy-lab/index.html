@@ -308,7 +308,7 @@ Overview Recently I completed a Hack the Box lab called Active. This Box was a l
 <h3 id="attack-path-summary">Attack Path Summary<a hidden class="anchor" aria-hidden="true" href="#attack-path-summary">#</a></h3>
 <ol>
 <li>
-<p>Utilize the provided credentials (<a href="mailto:JohnD@n00b.lyfe">JohnD@n00b.lyfe</a>) to enumerate all service accounts with a ServicePrincipalName (SPN)</p>
+<p>Utilize the provided credentials (<code>JohnD@n00b.lyfe</code>) to enumerate all service accounts with a ServicePrincipalName (SPN)</p>
 </li>
 <li>
 <p>Identify backup_svc as a service account with an associated SPN, making it a candidate for Kerberoasting</p>
@@ -332,7 +332,7 @@ Overview Recently I completed a Hack the Box lab called Active. This Box was a l
 <p>Identify the built-in domain Administrator account and extract the associated NTLM hash</p>
 </li>
 <li>
-<p>Utilize Pass-the-Hash authentication to obtain administrative access to DC01 as <a href="mailto:Administrator@n00b.lyfe">Administrator@n00b.lyfe</a></p>
+<p>Utilize Pass-the-Hash authentication to obtain administrative access to DC01 as <code>Administrator@n00b.lyfe</code></p>
 </li>
 </ol>
 <hr>
