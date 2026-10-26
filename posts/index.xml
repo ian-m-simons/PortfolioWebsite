@@ -6,8 +6,37 @@
     <description>Recent content in Posts on Security With Ian</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://SecurityWithIan.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Active Directory Hardening - DIY Lab</title>
+      <link>https://SecurityWithIan.com/posts/active-directory-hardening---diy-lab/</link>
+      <pubDate>Mon, 26 Oct 2026 00:00:00 +0000</pubDate>
+      <guid>https://SecurityWithIan.com/posts/active-directory-hardening---diy-lab/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Difficulty:&lt;/strong&gt; Medium&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OS:&lt;/strong&gt; Windows&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Date Completed:&lt;/strong&gt; 2026-10-26&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Write-up Authored by:&lt;/strong&gt; Ian Simons&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Lab Created by:&lt;/strong&gt; Ian Simons&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Core Competencies:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Defense in Depth&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Least Privilege&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Active Directory Hardening&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Group Policy Hardening&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;overview&#34;&gt;Overview&lt;/h3&gt;
+&lt;p&gt;Recently I created an Active Directory lab where I successfully went from a low privileged user to a Domain Admin using attacks such as Kerberoasting and Pass-the-Hash (previous lab can be found &lt;a href=&#34;https://securitywithian.com/posts/active-directory---diy-lab/&#34;&gt;here&lt;/a&gt;). This week I thought it would be a good exercise to take that lab and harden it as best I can to prevent this attack from succeeding again. I really enjoyed it. There is something special about attacking and then defending your own machine which is hard to put into words.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Active Directory - DIY Lab</title>
       <link>https://SecurityWithIan.com/posts/active-directory---diy-lab/</link>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Active Directory Hardening - DIY Lab | Security With Ian</title>
+<meta name="keywords" content="">
+<meta name="description" content="Difficulty: Medium
+OS: Windows
+Date Completed: 2026-10-26
+Write-up Authored by: Ian Simons
+Lab Created by: Ian Simons
+Core Competencies:
+
+
+Defense in Depth
+
+
+Least Privilege
+
+
+Active Directory Hardening
+
+
+Group Policy Hardening
+
+
+
+Overview
+Recently I created an Active Directory lab where I successfully went from a low privileged user to a Domain Admin using attacks such as Kerberoasting and Pass-the-Hash (previous lab can be found here). This week I thought it would be a good exercise to take that lab and harden it as best I can to prevent this attack from succeeding again. I really enjoyed it. There is something special about attacking and then defending your own machine which is hard to put into words.">
+<meta name="author" content="">
+<link rel="canonical" href="https://SecurityWithIan.com/posts/active-directory-hardening---diy-lab/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://SecurityWithIan.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://SecurityWithIan.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://SecurityWithIan.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://SecurityWithIan.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://SecurityWithIan.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://SecurityWithIan.com/posts/active-directory-hardening---diy-lab/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://SecurityWithIan.com/posts/active-directory-hardening---diy-lab/">
+  <meta property="og:site_name" content="Security With Ian">
+  <meta property="og:title" content="Active Directory Hardening - DIY Lab">
+  <meta property="og:description" content="Difficulty: Medium
+OS: Windows
+Date Completed: 2026-10-26
+Write-up Authored by: Ian Simons
+Lab Created by: Ian Simons
+Core Competencies:
+Defense in Depth
+Least Privilege
+Active Directory Hardening
+Group Policy Hardening
+Overview Recently I created an Active Directory lab where I successfully went from a low privileged user to a Domain Admin using attacks such as Kerberoasting and Pass-the-Hash (previous lab can be found here). This week I thought it would be a good exercise to take that lab and harden it as best I can to prevent this attack from succeeding again. I really enjoyed it. There is something special about attacking and then defending your own machine which is hard to put into words.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-10-26T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-10-26T00:00:00+00:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Active Directory Hardening - DIY Lab">
+  <meta name="twitter:description" content="Difficulty: Medium
+OS: Windows
+Date Completed: 2026-10-26
+Write-up Authored by: Ian Simons
+Lab Created by: Ian Simons
+Core Competencies:
+Defense in Depth
+Least Privilege
+Active Directory Hardening
+Group Policy Hardening
+Overview Recently I created an Active Directory lab where I successfully went from a low privileged user to a Domain Admin using attacks such as Kerberoasting and Pass-the-Hash (previous lab can be found here). This week I thought it would be a good exercise to take that lab and harden it as best I can to prevent this attack from succeeding again. I really enjoyed it. There is something special about attacking and then defending your own machine which is hard to put into words.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://SecurityWithIan.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Active Directory Hardening - DIY Lab",
+      "item": "https://SecurityWithIan.com/posts/active-directory-hardening---diy-lab/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Active Directory Hardening - DIY Lab",
+  "name": "Active Directory Hardening - DIY Lab",
+  "description": "Difficulty: Medium\nOS: Windows\nDate Completed: 2026-10-26\nWrite-up Authored by: Ian Simons\nLab Created by: Ian Simons\nCore Competencies:\nDefense in Depth\nLeast Privilege\nActive Directory Hardening\nGroup Policy Hardening\nOverview Recently I created an Active Directory lab where I successfully went from a low privileged user to a Domain Admin using attacks such as Kerberoasting and Pass-the-Hash (previous lab can be found here). This week I thought it would be a good exercise to take that lab and harden it as best I can to prevent this attack from succeeding again. I really enjoyed it. There is something special about attacking and then defending your own machine which is hard to put into words.\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "Difficulty: Medium\nOS: Windows\nDate Completed: 2026-10-26\nWrite-up Authored by: Ian Simons\nLab Created by: Ian Simons\nCore Competencies:\nDefense in Depth\nLeast Privilege\nActive Directory Hardening\nGroup Policy Hardening\nOverview Recently I created an Active Directory lab where I successfully went from a low privileged user to a Domain Admin using attacks such as Kerberoasting and Pass-the-Hash (previous lab can be found here). This week I thought it would be a good exercise to take that lab and harden it as best I can to prevent this attack from succeeding again. I really enjoyed it. There is something special about attacking and then defending your own machine which is hard to put into words.\nLab Setup Review As a quick review of our setup for this lab, there are two Windows Server 2022 devices DC01 (IP 10.10.10.5) serving as our domain controller and FS01 (IP 10.10.10.20) serving as a file server. Both servers were made discoverable across the network by anyone. a low-privilege user account John Doe (JohnD@n00b.lyfe) with the password: “Password123!@#” The purpose of this account was to allow us to begin from an assumed breach scenario. Additionally, a service account backup_svc (backup_svc@n00b.lyfe) was also created. The service account was assigned a ServicePrincipalName (SPN) and then made a local admin on FS01. This was to simulate a lazy administrator who gave the backup service account local admin privileges rather than setting up more granular access control as needed. Lastly the built-in domain account Administrator (Administrator@n00b.lyfe) logged into the file server preparing attack path.\nPrevious Attack Path The attack path that was used in the previous lab is listed below. Today this will serve as a map to harden our environment against this attack in the future. While a single break in this chain would protect the domain, we will be utilizing a defense in depth approach so that if any individual mitigation is insufficient, we are still protected from the attack path in the future.\nUtilize the provided credentials (JohnD@n00b.lyfe) to enumerate all service accounts with a ServicePrincipalName (SPN)\nIdentify backup_svc as a service account with an associated SPN, making it a candidate for Kerberoasting\nRequest Ticket Granting Service (TGS) ticket for backup_svc’s SPN and extract the associated hash\nCrack the hash associated with the TGS ticket offline\nLog onto FS01 remotely with the newly compromised account\nDisable Microsoft Defender to facilitate execution of credential dumping tools\nExtract NTLM hashes from LSASS memory\nIdentify the built-in domain Administrator account and extract the associated NTLM hash\nUtilize Pass-the-Hash to obtain administrative access to DC01 as Administrator@n00b.lyfe\nMitigations and controls Summary The following mitigations will be created to address the above attack path. Some items cannot be fully mitigated given the current setup. If a risk cannot be fully mitigated, it will be reduced where possible and explicitly documented.\nEnsure that all service accounts are configured as Group Managed Service Accounts (gMSA)\nDeny local and remote logon to all service accounts\nRemove unnecessary local administrator privileges from all service accounts\nEnable Anti-tamper protection on Windows Defender\nPrevent dumping of LSASS memory by setting it up as a protected process, enable credential Guard, and prevent LSASS from caching of plaintext credentials\nDisable NTLM authentication\nAddress the proper use of domain administrator accounts and recommend the creation of separate accounts with only the least privilege needed to complete their tasks\nGroup Managed Service Accounts (gMSA) Attack Path Steps: Kerberoasting and Password cracking (steps 3-4)\nThe first mitigation to put in place is to ensure that service accounts are set up as Group Managed Service Accounts (gMSA). It is important to note that this does not prevent Kerberoasting itself. GMSA is a means to protect the password of service accounts. By setting up gMSA, Passwords are 240 bytes long, consisting of randomized numbers, letters, and special characters, they will be automatically rotated every 30 days, and they cannot be accessed even by domain administrators. What this does for our attack path is it prevents the offline cracking of the service account’s password. While standard Kerberoasting will still allow the hash to be extracted, it is no longer feasible to crack the hash. Given how long and complicated the hash is, it would take notably longer than 30 days to crack, and at that point the password will have already been rotated. Unfortunately, this will also require rebuilding the account as there is no way to move a service account from a standard account to a gMSA. When doing this ensure that the account is created as identically as possible and maintain a backup of the original account in case the change needs to be reverted. Ensure that the owner of the account and the owner of any services the account is used for are notified. This notification should be made before the change and in alignment with organizational change controls.\nSteps to Implement Change Log onto DC01 and run the following command as administrator: Add-KDSRootKey -EffectiveImmediately While this is the correct way to make this change, it also will not work for our lab as Active Directory wants the key to replicate throughout the environment and will default to waiting 10 hours for this replication to occur. Because of the limited scope of this lab, instead we will run Add-KDSRootKey -EffectiveTime (get-date).addHours(-10) This is done so that we do not need to wait 10 hours for gMSAs to be used.\nCreate a security group called gMSA scoped globally with the following command New-ADGroup -Name \"gMSA_computers\" -GroupCategory Security -GroupScope Global\nAdd any devices that need access to the gMSAs to the group that was just created with the following command Add-ADGroupMember -identity \"gMSA_computers\" -Members \"FS01$\"\nRestart any devices added to gMSA_computers (in our case FS01)\nReplace the old service Account with the new gMSA using the following command Remove-ADUser -Identity backup_svc -Confirm:$false; New-ADServiceAccount backup_svc -DNSHostName backup_svc.n00b.lyfe -PrincipalsAllowedToRetrieveManagedPassword \"gMSA_computers\"\nEnsure that all settings on the new account match the old account, including things like SPNs group membership etc.\nInstall RSAT-AD-PowerShell on all gMSA_computers members with the following command Install-WindowsFeature -Name RSAT-AD-PowerShell\nInstall the Service account we built on the necessary devices with the following command Install-ADServiceAccount backup_svc\nVerify the Service account access with the following command Test-ADServiceAccount backup_svc output should be “True”\nFigure 1: Demonstration that the change has been made on FS01, showing that backup_svc has been installed on server.\nDeny Local and Remote Logon for Service Accounts Attack Path Steps: Log on with compromised service account (step 5)\nWhile gMSA greatly reduces the odds of a service account’s password being compromised, additional actions will be taken to ensure that even if a gMSA’s password is compromised, it cannot be used to log onto a device. This will be accomplished through a Group Policy Object (GPO).\nSteps to Implement Change Create a group for all gMSA accounts using the following command New-ADGroup -Name \"gMSA_accounts\" -GroupCategory Security -GroupScope Global\nAdd all gMSA accounts to this group, in this lab there is only one account so we will use the following command Add-ADGroupMember -Identity \"gMSA_accounts\" -Members \"backup_svc$\"\nOpen Group Policy management as Administrator\nRight click on the domain (n00b.lyfe) and select “Create a GPO in this domain, and Link it here…”\nName the GPO “Deny_ServiceAccount_Logons” and leave the Source Starter GPO set to none\nExpand the Domain subsection, find the newly created GPO, right click and select “Edit…”\nIn the Group Policy Management Editor navigate to Computer Configuration\u003ePolicies\u003eWindows Settings\u003eSecurity Settings\u003eLocal Policies\u003eUser Rights Assignment\nfind “Deny log on locally” and “Deny log on through Remote Desktop Services”.\nDouble click on “Deny log on Locally”. In the window which pops up check the “Define these policy settings” box\nClick the newly available button “Add User or Group”\nin the new window select “Browse”\nIn the new window type in “gMSA_accounts” then select check names.\ngMSA_accounts should now be underlined indicating it was successfully found.\nClick “OK”, in the previous Window click “OK” as well, finally in the Properties window click “Apply” followed by “OK”\nPerform steps 9-14 again but click on “Deny log on through Remote Desktop Services” instead.\nFigure 2. Group Policy report showing change preventing logon of gMSA_accounts either locally or via Remote Desktop Services (listed as Terminal Services).\nRemove Unnecessary Local Administrator Privileges Attack Path Steps: Disable Defender, and Extract NTLM Hash from LSASS memory (steps 6-7)\nThis step, while technically simple, requires additional procedural steps which cannot be ignored. Someone (in this case a lazy administrator) gave this account administrative privileges unnecessarily. This person needs to be notified that the account will no longer have those permissions and that fine-grained access control following the principle of least privilege needs to be implemented instead. If we do not take this step, something will break and the person responsible for keeping it working will not know why it broke. This prevents things from breaking unnecessarily and creates a paper trail showing that the administrator was notified of the action you took, and the remediation required on their part.\nSteps to Implement Change Log onto FS01\nOpen Powershell as an administrator and run the following command Remove-LocalGroupMember -Group \"Administrators\" -members \"n00b\\backup_svc\" note that this command only works if you did not delete the original account back during the first mitigation. If you deleted the account in first mitigation, then you simply need to make sure not to add it to the local administrators group when you built the gMSA\nEmail the service owner and follow any change controls as appropriate.\nFigure 3. net localgroup Administrators run showing service account is no longer local admin.\nEnable Anti-Tamper Protection in Windows Defender Attack Path Steps: Disable Defender (step 6)\nTo prevent an attack from disabling Windows defender, anti-tamper must be enabled. However, this presents a problem: if we remain a strictly on-premises Windows Active Directory Environment, there is no way to centrally manage defender. Further even if we went through and manually enabled anti-tamper on defender for every device, a local administrator would still be able to disable Defender. If it is feasible, the best mitigation here is to move to a hybrid environment and centrally managed Windows Defender via Intune. This will prevent local administrators from being able to disable Defender. If the environment must remain strictly on premises, then this risk must simply be accepted.\nPrevent Dumping of LSASS Memory Attack Path Steps: Extract NTLM hash from LSASS memory (step 7)\nPreventing the extraction of NTLM hashes is of critical importance. With an NTLM hash an attacker doesn’t need an accounts password, the attacker can simply use the hash instead. As long as NTLM authentication exists, this will remain a problem. For this reason, three mitigations will be implemented to attempt to prevent the extraction of NTLM hashes. It should be noted that these are not perfect fixes. A determined sophisticated attacker may still be able to extract the NTLM hash despite these controls. First LSASS will be forced to be run as a protected process light (PPL), second Windows Credential Guard will be enabled which is a built-in Windows security feature that protects sensitive domain credentials, and finally LSASS will be prevented from caching credentials in plain text. All of this will be accomplished by creating a GPO.\nSteps to Implement Change Log onto DC01\nOpen the Group Policy Management as an Administrator\nRight click on the domain (n00b.lyfe) and select “Create a GPO in this domain, and Link it here”\nName the GPO “LSASS_Protection” and leave source starter GPO as “none”\nRight click on the newly created GPO and select edit\nNavigate to Computer Configuration\u003ePreferences\u003eWindows Settings\u003eRegistry right click and select New\u003eRegistry Item\nSet the Action to “Update” and the hive to “HKEY_LOCAL_MACHINE”\nSet the Key Path put “System\\CurrentControlSet\\Control\\Lsa”\nFor the value name enter “RunAsPPL”, for the value type select “REG_DWORD”, and for value data enter “1” you can select either Hexadecimal or Decimal for the base.\nClick “Apply” and “OK”\nRight click and select New\u003eRegistry Item\nSet Action to “Update” and the hive to “HKEY_LOCAL_MACHINE”\nset the Key Path to “SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\WDigest”\nSet the value name to “UseLogonCredential”, set the value type to “REG_DWORD”, and set the Value Data to “0”. You can select either Hexadecimal or Decimal for the base.\nClick “Apply” and “OK”\nIn the Group Policy Management Editor Navigate to Computer Configuration\u003ePolicies\u003eAdministrative Templates: Policy Definitions\u003eSystem\u003eDevice Guard\nDouble click “Turn On Virtualization Based Security” in the upper left select enabled.\nIn the options box set the following options\nSelect Platform Security Level: Secure Boot and DMA Protections Virtualization based Protection of Code Integrity Enabled with UEFI lock check box for Require UEFI Memory Attributes Table Credential Guard Configuration: Enabled with UEFI lock Secure Launch Configuration: Enabled Select “Apply” and “OK”\nFigure 4. GPO Report showing credential Guard is enabled, as well as the changes to registry keys.\nDisable NTLM Authentication Attack Path Steps: Pass-the-Hash (step 9)\nPreventing Pass-the-Hash is a complicated topic. Disabling NTLM authentication is relatively simple in and of itself. However more often than not, doing so will break legacy systems for that reason it is typically best to start by auditing NTLM and seeing where it is still in use. Additionally, even if you disable NTLM authentication, other similar attacks such as pass-the-ticket etc. can still be performed. This also does not address the root cause of the issue in the attack chain. There is no reason why a domain administrator should have an account on a file server. While not a perfect solution and definitely not the way to implement this in a production environment, below is how to disable NTLM authentication, preventing a Pass-the-Hash attack.\nLog onto DC01\nOpen the Group Policy Management as an Administrator\nRight click on the domain (n00b.lyfe) and select “Create a GPO in this domain, and Link it here”\nName the GPO “Disable_NTLM” and leave source starter GPO as “none”\nRight click on the newly created GPO and select edit\nIn the Group Policy Management Editor navigate to Computer Configuration\u003ePolicies\u003eWindows Settings\u003eSecurity Settings\u003eLocal Policies\u003eSecurity Options\nFind and double click “Network Security: Restrict NTLM: NTLM authentication in this domain”.\nCheck the box for “Define this policy setting” and select “Deny all”\nClick “Apply” and click “Yes” when asked to confirm the setting change\nClick “OK”\nFigure 5. GPO Report Showing that NTLM Authentication is disabled.\nImplement Least Privilege Accounts Attack Path Steps: Extract NTLM hash from LSASS memory (step 7)\nPart of the reason that this attack had such a high impact was because an administrator had logged onto FS01 with a domain administrator account. If this had not happened, the NTLM hash would not have existed in LSASS memory in the first place. This is a textbook case of why least privilege accounts should be implemented. There is no reason that a domain administrator account should ever log onto a file server. Instead, a server administrator account should be created which allows the user to log onto the server, read logs, and edit and configure services as needed. Recommended Accounts and privileges are listed below.\nAccount type Usage Standard User Account Used for typical day to day activities such as email, web browsing, documentation and non-administrative tasks Server Admin Used only for management of member servers. May administer services, review logs, and perform server maintenance Domain Admin Used only for Active Directory administration and Domain Controller maintenance. Should not be used to log onto workstations or member servers Hardening Outcome Summary Attack Step Before After Kerberoasting Success Hash extractable, but nearly uncrackable Service Account Logon Success Blocked Defender Disable Success Risk reduced LSASS Dump Success Significantly harder Pass-the-Hash Success Blocked Domain Admin Exposure Success Eliminated through least-privilege administration (assuming recommendation is followed) Lessons Learned This was my first Hardening lab. It made it so much more meaningful knowing that an attack I had successfully executed was no longer viable. I really enjoyed learning about Service accounts and some of the modern defenses that Microsoft has pushed out such as gMSA. This lab also forced me to really get my hands dirty in Group Policy, which was new. I definitely feel like I have a much better hands-on grasp of it now, whereas before it was all strictly theoretical, some key takeaways include:\nA mitigation does not need to completely prevent an attack to provide value\nDefense in Depth is not easy to implement, but it is also not easy to bypass, which is what makes it so powerful\nLeast Privilege is one of the most effective security controls you can implement.\n",
+  "wordCount" : "2736",
+  "inLanguage": "en",
+  "datePublished": "2026-10-26T00:00:00Z",
+  "dateModified": "2026-10-26T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://SecurityWithIan.com/posts/active-directory-hardening---diy-lab/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Security With Ian",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://SecurityWithIan.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://SecurityWithIan.com/" accesskey="h" title="Security With Ian (Alt + H)">Security With Ian</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://SecurityWithIan.com/posts" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://SecurityWithIan.com/security-toolkit/" title="Security Toolkit">
+                    <span>Security Toolkit</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Active Directory Hardening - DIY Lab
+    </h1>
+    <div class="post-meta">
+
+<span title='2026-10-26 00:00:00 +0000 UTC'>October 26, 2026</span>
+
+</div>
+  </header> 
+  <div class="post-content md-content"><p><strong>Difficulty:</strong> Medium</p>
+<p><strong>OS:</strong> Windows</p>
+<p><strong>Date Completed:</strong> 2026-10-26</p>
+<p><strong>Write-up Authored by:</strong> Ian Simons</p>
+<p><strong>Lab Created by:</strong> Ian Simons</p>
+<p><strong>Core Competencies:</strong></p>
+<ul>
+<li>
+<p>Defense in Depth</p>
+</li>
+<li>
+<p>Least Privilege</p>
+</li>
+<li>
+<p>Active Directory Hardening</p>
+</li>
+<li>
+<p>Group Policy Hardening</p>
+</li>
+</ul>
+<hr>
+<h3 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h3>
+<p>Recently I created an Active Directory lab where I successfully went from a low privileged user to a Domain Admin using attacks such as Kerberoasting and Pass-the-Hash (previous lab can be found <a href="https://securitywithian.com/posts/active-directory---diy-lab/">here</a>). This week I thought it would be a good exercise to take that lab and harden it as best I can to prevent this attack from succeeding again. I really enjoyed it. There is something special about attacking and then defending your own machine which is hard to put into words.</p>
+<hr>
+<h3 id="lab-setup-review">Lab Setup Review<a hidden class="anchor" aria-hidden="true" href="#lab-setup-review">#</a></h3>
+<p>As a quick review of our setup for this lab, there are two Windows Server 2022 devices DC01 (IP 10.10.10.5) serving as our domain controller and FS01 (IP 10.10.10.20) serving as a file server. Both servers were made discoverable across the network by anyone. a low-privilege user account John Doe (<code>JohnD@n00b.lyfe</code>) with the password: &ldquo;Password123!@#&rdquo; The purpose of this account was to allow us to begin from an assumed breach scenario. Additionally, a service account backup_svc (<code>backup_svc@n00b.lyfe</code>) was also created. The service account was assigned a ServicePrincipalName (SPN) and then made a local admin on FS01. This was to simulate a lazy administrator who gave the backup service account local admin privileges rather than setting up more granular access control as needed. Lastly the built-in domain account Administrator (<code>Administrator@n00b.lyfe</code>) logged into the file server preparing attack path.</p>
+<hr>
+<h3 id="previous-attack-path">Previous Attack Path<a hidden class="anchor" aria-hidden="true" href="#previous-attack-path">#</a></h3>
+<p>The attack path that was used in the previous lab is listed below. Today this will serve as a map to harden our environment against this attack in the future. While a single break in this chain would protect the domain, we will be utilizing a defense in depth approach so that if any individual mitigation is insufficient, we are still protected from the attack path in the future.</p>
+<ol>
+<li>
+<p>Utilize the provided credentials (<code>JohnD@n00b.lyfe</code>) to enumerate all service accounts with a ServicePrincipalName (SPN)</p>
+</li>
+<li>
+<p>Identify backup_svc as a service account with an associated SPN, making it a candidate for Kerberoasting</p>
+</li>
+<li>
+<p>Request Ticket Granting Service (TGS) ticket for backup_svc&rsquo;s SPN and extract the associated hash</p>
+</li>
+<li>
+<p>Crack the hash associated with the TGS ticket offline</p>
+</li>
+<li>
+<p>Log onto FS01 remotely with the newly compromised account</p>
+</li>
+<li>
+<p>Disable Microsoft Defender to facilitate execution of credential dumping tools</p>
+</li>
+<li>
+<p>Extract NTLM hashes from LSASS memory</p>
+</li>
+<li>
+<p>Identify the built-in domain Administrator account and extract the associated NTLM hash</p>
+</li>
+<li>
+<p>Utilize Pass-the-Hash to obtain administrative access to DC01 as <code>Administrator@n00b.lyfe</code></p>
+</li>
+</ol>
+<hr>
+<h3 id="mitigations-and-controls-summary">Mitigations and controls Summary<a hidden class="anchor" aria-hidden="true" href="#mitigations-and-controls-summary">#</a></h3>
+<p>The following mitigations will be created to address the above attack path. Some items cannot be fully mitigated given the current setup. If a risk cannot be fully mitigated, it will be reduced where possible and explicitly documented.</p>
+<ol>
+<li>
+<p>Ensure that all service accounts are configured as Group Managed Service Accounts (gMSA)</p>
+</li>
+<li>
+<p>Deny local and remote logon to all service accounts</p>
+</li>
+<li>
+<p>Remove unnecessary local administrator privileges from all service accounts</p>
+</li>
+<li>
+<p>Enable Anti-tamper protection on Windows Defender</p>
+</li>
+<li>
+<p>Prevent dumping of LSASS memory by setting it up as a protected process, enable credential Guard, and prevent LSASS from caching of plaintext credentials</p>
+</li>
+<li>
+<p>Disable NTLM authentication</p>
+</li>
+<li>
+<p>Address the proper use of domain administrator accounts and recommend the creation of separate accounts with only the least privilege needed to complete their tasks</p>
+</li>
+</ol>
+<hr>
+<h3 id="group-managed-service-accounts-gmsa">Group Managed Service Accounts (gMSA)<a hidden class="anchor" aria-hidden="true" href="#group-managed-service-accounts-gmsa">#</a></h3>
+<p><strong>Attack Path Steps</strong>: Kerberoasting and Password cracking (steps 3-4)</p>
+<p>The first mitigation to put in place is to ensure that service accounts are set up as Group Managed Service Accounts (gMSA). It is important to note that this does not prevent Kerberoasting itself. GMSA is a means to protect the password of service accounts. By setting up gMSA, Passwords are 240 bytes long, consisting of randomized numbers, letters, and special characters, they will be automatically rotated every 30 days, and they cannot be accessed even by domain administrators. What this does for our attack path is it prevents the offline cracking of the service account&rsquo;s password. While standard Kerberoasting will still allow the hash to be extracted, it is no longer feasible to crack the hash. Given how long and complicated the hash is, it would take notably longer than 30 days to crack, and at that point the password will have already been rotated. Unfortunately, this will also require rebuilding the account as there is no way to move a service account from a standard account to a gMSA. When doing this ensure that the account is created as identically as possible and maintain a backup of the original account in case the change needs to be reverted. Ensure that the owner of the account and the owner of any services the account is used for are notified. This notification should be made before the change and in alignment with organizational change controls.</p>
+<h4 id="steps-to-implement-change">Steps to Implement Change<a hidden class="anchor" aria-hidden="true" href="#steps-to-implement-change">#</a></h4>
+<ol>
+<li>
+<p>Log onto DC01 and run the following command as administrator: <code>Add-KDSRootKey -EffectiveImmediately</code> While this is the correct way to make this change, it also will not work for our lab as Active Directory wants the key to replicate throughout the environment and will default to waiting 10 hours for this replication to occur. Because of the limited scope of this lab, instead we will run <code>Add-KDSRootKey -EffectiveTime (get-date).addHours(-10)</code> This is done so that we do not need to wait 10 hours for gMSAs to be used.</p>
+</li>
+<li>
+<p>Create a security group called gMSA scoped globally with the following command <code>New-ADGroup -Name &quot;gMSA_computers&quot; -GroupCategory Security -GroupScope Global</code></p>
+</li>
+<li>
+<p>Add any devices that need access to the gMSAs to the group that was just created with the following command <code>Add-ADGroupMember -identity &quot;gMSA_computers&quot; -Members &quot;FS01$&quot;</code></p>
+</li>
+<li>
+<p>Restart any devices added to gMSA_computers (in our case FS01)</p>
+</li>
+<li>
+<p>Replace the old service Account with the new gMSA using the following command <code>Remove-ADUser -Identity backup_svc -Confirm:$false; New-ADServiceAccount backup_svc -DNSHostName backup_svc.n00b.lyfe -PrincipalsAllowedToRetrieveManagedPassword &quot;gMSA_computers&quot;</code></p>
+</li>
+<li>
+<p>Ensure that all settings on the new account match the old account, including things like SPNs group membership etc.</p>
+</li>
+<li>
+<p>Install RSAT-AD-PowerShell on all gMSA_computers members with the following command <code>Install-WindowsFeature -Name RSAT-AD-PowerShell</code></p>
+</li>
+<li>
+<p>Install the Service account we built on the necessary devices with the following command <code>Install-ADServiceAccount backup_svc</code></p>
+</li>
+<li>
+<p>Verify the Service account access with the following command <code>Test-ADServiceAccount backup_svc</code> output should be &ldquo;True&rdquo;</p>
+</li>
+</ol>
+<p><img alt="gMSA.jpg" loading="lazy" src="/images/HardeningLab/gMSA.jpg"></p>
+<p>Figure 1: Demonstration that the change has been made on FS01, showing that backup_svc has been installed on server.</p>
+<hr>
+<h3 id="deny-local-and-remote-logon-for-service-accounts">Deny Local and Remote Logon for Service Accounts<a hidden class="anchor" aria-hidden="true" href="#deny-local-and-remote-logon-for-service-accounts">#</a></h3>
+<p><strong>Attack Path Steps</strong>: Log on with compromised service account (step 5)</p>
+<p>While gMSA greatly reduces the odds of a service account&rsquo;s password being compromised, additional actions will be taken to ensure that even if a gMSA&rsquo;s password is compromised, it cannot be used to log onto a device. This will be accomplished through a Group Policy Object (GPO).</p>
+<h4 id="steps-to-implement-change-1">Steps to Implement Change<a hidden class="anchor" aria-hidden="true" href="#steps-to-implement-change-1">#</a></h4>
+<ol>
+<li>
+<p>Create a group for all gMSA accounts using the following command <code>New-ADGroup -Name &quot;gMSA_accounts&quot; -GroupCategory Security -GroupScope Global</code></p>
+</li>
+<li>
+<p>Add all gMSA accounts to this group, in this lab there is only one account so we will use the following command <code>Add-ADGroupMember -Identity &quot;gMSA_accounts&quot; -Members &quot;backup_svc$&quot;</code></p>
+</li>
+<li>
+<p>Open Group Policy management as Administrator</p>
+</li>
+<li>
+<p>Right click on the domain (n00b.lyfe) and select &ldquo;Create a GPO in this domain, and Link it here&hellip;&rdquo;</p>
+</li>
+<li>
+<p>Name the GPO &ldquo;Deny_ServiceAccount_Logons&rdquo; and leave the Source Starter GPO set to none</p>
+</li>
+<li>
+<p>Expand the Domain subsection, find the newly created GPO, right click and select &ldquo;Edit&hellip;&rdquo;</p>
+</li>
+<li>
+<p>In the Group Policy Management Editor navigate to Computer Configuration&gt;Policies&gt;Windows Settings&gt;Security Settings&gt;Local Policies&gt;User Rights Assignment</p>
+</li>
+<li>
+<p>find &ldquo;Deny log on locally&rdquo; and &ldquo;Deny log on through Remote Desktop Services&rdquo;.</p>
+</li>
+<li>
+<p>Double click on &ldquo;Deny log on Locally&rdquo;. In the window which pops up check the &ldquo;Define these policy settings&rdquo; box</p>
+</li>
+<li>
+<p>Click the newly available button &ldquo;Add User or Group&rdquo;</p>
+</li>
+<li>
+<p>in the new window select &ldquo;Browse&rdquo;</p>
+</li>
+<li>
+<p>In the new window type in &ldquo;gMSA_accounts&rdquo; then select check names.</p>
+</li>
+<li>
+<p>gMSA_accounts should now be underlined indicating it was successfully found.</p>
+</li>
+<li>
+<p>Click &ldquo;OK&rdquo;, in the previous Window click &ldquo;OK&rdquo; as well, finally in the Properties window click &ldquo;Apply&rdquo; followed by &ldquo;OK&rdquo;</p>
+</li>
+<li>
+<p>Perform steps 9-14 again but click on &ldquo;Deny log on through Remote Desktop Services&rdquo; instead.</p>
+</li>
+</ol>
+<p><img alt="DenyLogon.jpg" loading="lazy" src="/images/HardeningLab/DenyLogon.jpg"></p>
+<p>Figure 2. Group Policy report showing change preventing logon of gMSA_accounts either locally or via Remote Desktop Services (listed as Terminal Services).</p>
+<hr>
+<h3 id="remove-unnecessary-local-administrator-privileges">Remove Unnecessary Local Administrator Privileges<a hidden class="anchor" aria-hidden="true" href="#remove-unnecessary-local-administrator-privileges">#</a></h3>
+<p><strong>Attack Path Steps</strong>: Disable Defender, and Extract NTLM Hash from LSASS memory (steps 6-7)</p>
+<p>This step, while technically simple, requires additional procedural steps which cannot be ignored. Someone (in this case a lazy administrator) gave this account administrative privileges unnecessarily. This person needs to be notified that the account will no longer have those permissions and that fine-grained access control following the principle of least privilege needs to be implemented instead. If we do not take this step, something will break and the person responsible for keeping it working will not know why it broke. This prevents things from breaking unnecessarily and creates a paper trail showing that the administrator was notified of the action you took, and the remediation required on their part.</p>
+<h4 id="steps-to-implement-change-2">Steps to Implement Change<a hidden class="anchor" aria-hidden="true" href="#steps-to-implement-change-2">#</a></h4>
+<ol>
+<li>
+<p>Log onto FS01</p>
+</li>
+<li>
+<p>Open Powershell as an administrator and run the following command <code>Remove-LocalGroupMember -Group &quot;Administrators&quot; -members &quot;n00b\backup_svc&quot;</code> note that this command only works if you did not delete the original account back during the first mitigation. If you deleted the account in first mitigation, then you simply need to make sure not to add it to the local administrators group when you built the gMSA</p>
+</li>
+<li>
+<p>Email the service owner and follow any change controls as appropriate.</p>
+</li>
+</ol>
+<p><img alt="localAdmins.jpg" loading="lazy" src="/images/HardeningLab/LocalAdmins.jpg"></p>
+<p>Figure 3. <code>net localgroup Administrators</code> run showing service account is no longer local admin.</p>
+<hr>
+<h3 id="enable-anti-tamper-protection-in-windows-defender">Enable Anti-Tamper Protection in Windows Defender<a hidden class="anchor" aria-hidden="true" href="#enable-anti-tamper-protection-in-windows-defender">#</a></h3>
+<p><strong>Attack Path Steps</strong>: Disable Defender (step 6)</p>
+<p>To prevent an attack from disabling Windows defender, anti-tamper must be enabled. However, this presents a problem: if we remain a strictly on-premises Windows Active Directory Environment, there is no way to centrally manage defender. Further even if we went through and manually enabled anti-tamper on defender for every device, a local administrator would still be able to disable Defender. If it is feasible, the best mitigation here is to move to a hybrid environment and centrally managed Windows Defender via Intune. This will prevent local administrators from being able to disable Defender. If the environment must remain strictly on premises, then this risk must simply be accepted.</p>
+<hr>
+<h3 id="prevent-dumping-of-lsass-memory">Prevent Dumping of LSASS Memory<a hidden class="anchor" aria-hidden="true" href="#prevent-dumping-of-lsass-memory">#</a></h3>
+<p><strong>Attack Path Steps</strong>: Extract NTLM hash from LSASS memory (step 7)</p>
+<p>Preventing the extraction of NTLM hashes is of critical importance. With an NTLM hash an attacker doesn&rsquo;t need an accounts password, the attacker can simply use the hash instead. As long as NTLM authentication exists, this will remain a problem. For this reason, three mitigations will be implemented to attempt to prevent the extraction of NTLM hashes. It should be noted that these are not perfect fixes. A determined sophisticated attacker may still be able to extract the NTLM hash despite these controls. First LSASS will be forced to be run as a protected process light (PPL), second Windows Credential Guard will be enabled which is a built-in Windows security feature that protects sensitive domain credentials, and finally LSASS will be prevented from caching credentials in plain text. All of this will be accomplished by creating a GPO.</p>
+<h4 id="steps-to-implement-change-3">Steps to Implement Change<a hidden class="anchor" aria-hidden="true" href="#steps-to-implement-change-3">#</a></h4>
+<ol>
+<li>
+<p>Log onto DC01</p>
+</li>
+<li>
+<p>Open the Group Policy Management as an Administrator</p>
+</li>
+<li>
+<p>Right click on the domain (n00b.lyfe) and select &ldquo;Create a GPO in this domain, and Link it here&rdquo;</p>
+</li>
+<li>
+<p>Name the GPO &ldquo;LSASS_Protection&rdquo; and leave source starter GPO as &ldquo;none&rdquo;</p>
+</li>
+<li>
+<p>Right click on the newly created GPO and select edit</p>
+</li>
+<li>
+<p>Navigate to Computer Configuration&gt;Preferences&gt;Windows Settings&gt;Registry right click and select New&gt;Registry Item</p>
+</li>
+<li>
+<p>Set the Action to &ldquo;Update&rdquo; and the hive to &ldquo;HKEY_LOCAL_MACHINE&rdquo;</p>
+</li>
+<li>
+<p>Set the Key Path put &ldquo;System\CurrentControlSet\Control\Lsa&rdquo;</p>
+</li>
+<li>
+<p>For the value name enter &ldquo;RunAsPPL&rdquo;, for the value type select &ldquo;REG_DWORD&rdquo;, and for value data enter &ldquo;1&rdquo; you can select either Hexadecimal or Decimal for the base.</p>
+</li>
+<li>
+<p>Click &ldquo;Apply&rdquo; and &ldquo;OK&rdquo;</p>
+</li>
+<li>
+<p>Right click and select New&gt;Registry Item</p>
+</li>
+<li>
+<p>Set Action to &ldquo;Update&rdquo; and the hive to &ldquo;HKEY_LOCAL_MACHINE&rdquo;</p>
+</li>
+<li>
+<p>set the Key Path to &ldquo;SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest&rdquo;</p>
+</li>
+<li>
+<p>Set the value name to &ldquo;UseLogonCredential&rdquo;, set the value type to &ldquo;REG_DWORD&rdquo;, and set the Value Data to &ldquo;0&rdquo;. You can select either Hexadecimal or Decimal for the base.</p>
+</li>
+<li>
+<p>Click &ldquo;Apply&rdquo; and &ldquo;OK&rdquo;</p>
+</li>
+<li>
+<p>In the Group Policy Management Editor Navigate to Computer Configuration&gt;Policies&gt;Administrative Templates: Policy Definitions&gt;System&gt;Device Guard</p>
+</li>
+<li>
+<p>Double click &ldquo;Turn On Virtualization Based Security&rdquo; in the upper left select enabled.</p>
+</li>
+<li>
+<p>In the options box set the following options</p>
+<ul>
+<li>Select Platform Security Level: Secure Boot and DMA Protections</li>
+<li>Virtualization based Protection of Code Integrity Enabled with UEFI lock</li>
+<li>check box for Require UEFI Memory Attributes Table</li>
+<li>Credential Guard Configuration: Enabled with UEFI lock</li>
+<li>Secure Launch Configuration: Enabled</li>
+</ul>
+</li>
+<li>
+<p>Select &ldquo;Apply&rdquo; and &ldquo;OK&rdquo;</p>
+</li>
+</ol>
+<p><img alt="LSASS.jpg" loading="lazy" src="/images/HardeningLab/LSASS.jpg"></p>
+<p>Figure 4. GPO Report showing credential Guard is enabled, as well as the changes to registry keys.</p>
+<hr>
+<h3 id="disable-ntlm-authentication">Disable NTLM Authentication<a hidden class="anchor" aria-hidden="true" href="#disable-ntlm-authentication">#</a></h3>
+<p><strong>Attack Path Steps</strong>: Pass-the-Hash (step 9)</p>
+<p>Preventing Pass-the-Hash is a complicated topic. Disabling NTLM authentication is relatively simple in and of itself. However more often than not, doing so will break legacy systems for that reason it is typically best to start by auditing NTLM and seeing where it is still in use. Additionally, even if you disable NTLM authentication, other similar attacks such as pass-the-ticket etc. can still be performed. This also does not address the root cause of the issue in the attack chain. There is no reason why a domain administrator should have an account on a file server. While not a perfect solution and definitely not the way to implement this in a production environment, below is how to disable NTLM authentication, preventing a Pass-the-Hash attack.</p>
+<ol>
+<li>
+<p>Log onto DC01</p>
+</li>
+<li>
+<p>Open the Group Policy Management as an Administrator</p>
+</li>
+<li>
+<p>Right click on the domain (n00b.lyfe) and select &ldquo;Create a GPO in this domain, and Link it here&rdquo;</p>
+</li>
+<li>
+<p>Name the GPO &ldquo;Disable_NTLM&rdquo; and leave source starter GPO as &ldquo;none&rdquo;</p>
+</li>
+<li>
+<p>Right click on the newly created GPO and select edit</p>
+</li>
+<li>
+<p>In the Group Policy Management Editor navigate to Computer Configuration&gt;Policies&gt;Windows Settings&gt;Security Settings&gt;Local Policies&gt;Security Options</p>
+</li>
+<li>
+<p>Find and double click &ldquo;Network Security: Restrict NTLM: NTLM authentication in this domain&rdquo;.</p>
+</li>
+<li>
+<p>Check the box for &ldquo;Define this policy setting&rdquo; and select &ldquo;Deny all&rdquo;</p>
+</li>
+<li>
+<p>Click &ldquo;Apply&rdquo; and click &ldquo;Yes&rdquo; when asked to confirm the setting change</p>
+</li>
+<li>
+<p>Click &ldquo;OK&rdquo;</p>
+</li>
+</ol>
+<p><img alt="NTLMDisable.jpg" loading="lazy" src="/images/HardeningLab/NTLMDisable.jpg"></p>
+<p>Figure 5. GPO Report Showing that NTLM Authentication is disabled.</p>
+<hr>
+<h3 id="implement-least-privilege-accounts">Implement Least Privilege Accounts<a hidden class="anchor" aria-hidden="true" href="#implement-least-privilege-accounts">#</a></h3>
+<p><strong>Attack Path Steps</strong>: Extract NTLM hash from LSASS memory (step 7)</p>
+<p>Part of the reason that this attack had such a high impact was because an administrator had logged onto FS01 with a domain administrator account. If this had not happened, the NTLM hash would not have existed in LSASS memory in the first place. This is a textbook case of why least privilege accounts should be implemented. There is no reason that a domain administrator account should ever log onto a file server. Instead, a server administrator account should be created which allows the user to log onto the server, read logs, and edit and configure services as needed. Recommended Accounts and privileges are listed below.</p>
+<table>
+	<thead>
+			<tr>
+					<th>Account type</th>
+					<th>Usage</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Standard User Account</td>
+					<td>Used for typical day to day activities such as email, web browsing, documentation and non-administrative tasks</td>
+			</tr>
+			<tr>
+					<td>Server Admin</td>
+					<td>Used only for management of member servers. May administer services, review logs, and perform server maintenance</td>
+			</tr>
+			<tr>
+					<td>Domain Admin</td>
+					<td>Used only for Active Directory administration and Domain Controller maintenance. Should not be used to log onto workstations or member servers</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="hardening-outcome-summary">Hardening Outcome Summary<a hidden class="anchor" aria-hidden="true" href="#hardening-outcome-summary">#</a></h3>
+<table>
+	<thead>
+			<tr>
+					<th>Attack Step</th>
+					<th>Before</th>
+					<th>After</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Kerberoasting</td>
+					<td>Success</td>
+					<td>Hash extractable, but nearly uncrackable</td>
+			</tr>
+			<tr>
+					<td>Service Account Logon</td>
+					<td>Success</td>
+					<td>Blocked</td>
+			</tr>
+			<tr>
+					<td>Defender Disable</td>
+					<td>Success</td>
+					<td>Risk reduced</td>
+			</tr>
+			<tr>
+					<td>LSASS Dump</td>
+					<td>Success</td>
+					<td>Significantly harder</td>
+			</tr>
+			<tr>
+					<td>Pass-the-Hash</td>
+					<td>Success</td>
+					<td>Blocked</td>
+			</tr>
+			<tr>
+					<td>Domain Admin Exposure</td>
+					<td>Success</td>
+					<td>Eliminated through least-privilege administration (assuming recommendation is followed)</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h3 id="lessons-learned">Lessons Learned<a hidden class="anchor" aria-hidden="true" href="#lessons-learned">#</a></h3>
+<p>This was my first Hardening lab. It made it so much more meaningful knowing that an attack I had successfully executed was no longer viable. I really enjoyed learning about Service accounts and some of the modern defenses that Microsoft has pushed out such as gMSA. This lab also forced me to really get my hands dirty in Group Policy, which was new. I definitely feel like I have a much better hands-on grasp of it now, whereas before it was all strictly theoretical, some key takeaways include:</p>
+<ul>
+<li>
+<p>A mitigation does not need to completely prevent an attack to provide value</p>
+</li>
+<li>
+<p>Defense in Depth is not easy to implement, but it is also not easy to bypass, which is what makes it so powerful</p>
+</li>
+<li>
+<p>Least Privilege is one of the most effective security controls you can implement.</p>
+</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://SecurityWithIan.com/">Security With Ian</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
